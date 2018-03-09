@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a123456.cartzhonggu.BuMessageActivity;
 import com.example.a123456.cartzhonggu.CartListInfoMsgActivity;
 import com.example.a123456.cartzhonggu.R;
 import com.example.a123456.cartzhonggu.WebViewActivity;
@@ -82,7 +83,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
     }
 
     private void initView() {
-//        setDate();
+        setDate();
         refreshLayout = (RefreshLayout)view.findViewById(R.id.refreshLayout);
 
         lv=view.findViewById(R.id.lv);
@@ -114,52 +115,66 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
                 refreshlayout.getLayout().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                        CarBean carBean=new CarBean();
-//                        for(int i=count;i<=count+20;i++){
-//                            carBean.tv_name="大众---"+i;
-//                            carBean.tv_company_name="中古测试---"+i;
-//                            carBean.tv_num1="12321sdfsfdsfsfs---"+i;
-//                            carBean.tv_num2="进123rew---"+i;
-//                            list.add(carBean);
-//                        }
-//                        count=list.size();
-                        if(i<Integer.parseInt(BUCartListBeanNUm.last_page)) {
-                            i++;
-                            getBuCartList(i);
-                        }else{
-                            Toast.makeText(getContext(),"数据加载完毕",Toast.LENGTH_SHORT).show();
+                        BuCartListBean carBean=new BuCartListBean();
+                        for(int i=count;i<=count+20;i++){
+                            carBean.cardType="大众---"+i;
+                            carBean.name="中古测试---"+i;
+                            carBean.vin="12321sdfsfdsfsfs---"+i;
+                            carBean.licensePlate="进123rew---"+i;
+                            list.add(carBean);
                         }
+//                        count=list.size();
+//                        if(i<Integer.parseInt(BUCartListBeanNUm.last_page)) {
+//                            i++;
+//                            getBuCartList(i);
+//                        }else{
+//                            Toast.makeText(getContext(),"数据加载完毕",Toast.LENGTH_SHORT).show();
+//                        }
                     }
                 },3000);
 
                 refreshlayout.finishLoadmore(2000);
             }
         });
+        if (list!=null) {
+            adapter = new MyLvAdapter(list, getActivity());
+            lv.setAdapter(adapter);
+        }
     }
     //设置数据源
-//    private void setDate(){
-//        list=new ArrayList<BuCartListBean>();
-//        for(int i=0;i<20;i++){
+    private void setDate(){
+        list=new ArrayList<BuCartListBean>();
+        for(int i=0;i<20;i++){
 //            CarBean carBean=new CarBean();
-//            carBean.tv_name="大众---"+i;
-//            carBean.tv_company_name="中古测试---"+i;
-//            carBean.tv_num1="12321sdfsfdsfsfs---"+i;
-//            carBean.tv_num2="进123rew---"+i;
+            BuCartListBean cartListBean=new BuCartListBean();
+            cartListBean.cardType="大众---"+i;
+            cartListBean.name="中古测试---"+i;
+            cartListBean.vin="12321sdfsfdsfsfs---"+i;
+            cartListBean.licensePlate="进123rew---"+i;
+            cartListBean.time="2018-2-2";
+            cartListBean.modelName="车型name";
+            cartListBean.userName=UserBean.username;
 //            list.add(carBean);
-//            count=i;
-//        }
-//}
+            list.add(cartListBean);
+            count=i;
+
+        }
+}
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Toast.makeText(getContext(),"点击第+"+i+"条数据",Toast.LENGTH_SHORT).show();
-        Intent intent=new Intent(getContext(), CartListInfoMsgActivity.class);
-        intent.putExtra("vin"+i,list.get(i).vin);
-        intent.putExtra("cardType"+i,list.get(i).cardType);
-        intent.putExtra("licensePlate"+i,list.get(i).licensePlate);
-        intent.putExtra("name"+i,list.get(i).name);
-        intent.putExtra("i",""+i);
+//        Intent intent=new Intent(getContext(), CartListInfoMsgActivity.class);
+//        intent.putExtra("vin"+i,list.get(i).vin);
+//        intent.putExtra("cardType"+i,list.get(i).cardType);
+//        intent.putExtra("licensePlate"+i,list.get(i).licensePlate);
+//        intent.putExtra("name"+i,list.get(i).name);
+//        intent.putExtra("i",""+i);
+//        startActivity(intent);
+        Intent intent=new Intent(getContext(), BuMessageActivity.class);
+                intent.putExtra("i",""+i);
         startActivity(intent);
+
     }
 
     @Override

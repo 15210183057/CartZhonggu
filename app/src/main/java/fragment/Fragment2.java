@@ -106,16 +106,16 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                 refreshlayout.getLayout().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        CarBean carBean=new CarBean();
-                        for(int i=count;i<=count+20;i++){
-                            carBean.tv_name="大众---"+i;
-                            carBean.tv_company_name="中古测试---"+i;
-                            carBean.tv_num1="12321sdfsfdsfsfs---"+i;
-                            carBean.tv_num2="进123rew---"+i;
-                            list.add(carBean);
-                        }
-                        count=list.size();
-                        adapter.notifyDataSetChanged();
+//                        CarBean carBean=new CarBean();
+//                        for(int i=count;i<=count+20;i++){
+//                            carBean.tv_name="大众---"+i;
+//                            carBean.tv_company_name="中古测试---"+i;
+//                            carBean.tv_num1="12321sdfsfdsfsfs---"+i;
+//                            carBean.tv_num2="进123rew---"+i;
+//                            list.add(carBean);
+//                        }
+//                        count=list.size();
+//                        adapter.notifyDataSetChanged();
                     }
                 },3000);
 
@@ -132,8 +132,13 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.e("TAG","setUserVisibleHint必走方法==="+isVisibleToUser);
+    public void onHiddenChanged(boolean isVisibleToUser) {
+        Log.e("TAG","onHiddenChanged==="+isVisibleToUser);
+        setDate();
+        Log.e("TAG","listbean.size=="+listBeans.size());
+//        if(listBeans!=null){
+//            adapter.notifyDataSetChanged();
+//        }
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -168,8 +173,10 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
            if(!buCartListBean.vin.isEmpty()
                          && !buCartListBean.cardType.isEmpty()
                             &&!buCartListBean.name.isEmpty()
-                            &&!buCartListBean.cardType.isEmpty()){
+                            &&!buCartListBean.licensePlate.isEmpty()){
                listBeans.add(buCartListBean);
+           }else{
+               Log.e("TAG","为空");
            }
        }
     }
@@ -181,12 +188,16 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 
     @Override
     public void call(int i) {
-        if(list.get(i).Flag){
-            list.get(i).Flag=false;
+        Log.e("TAG","Flag=="+listBeans.get(i).Flag);
+        if(listBeans.get(i).Flag){
+            Log.e("TAG","点击Call");
+            listBeans.get(i).Flag=false;
             img_topleft.setText("全选");
+            adapter.notifyDataSetChanged();
         }else{
-            list.get(i).Flag=true;
+            listBeans.get(i).Flag=true;
             img_topleft.setText("取消");
+            adapter.notifyDataSetChanged();
         }
         adapter.notifyDataSetChanged();
     }
@@ -197,14 +208,14 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
             case R.id.img_left:
                 if(img_topleft.getText().toString().equals("全选")){
                     img_topleft.setText("取消");
-                    for(int i=0;i<list.size();i++){
-                        list.get(i).Flag=true;
+                    for(int i=0;i<listBeans.size();i++){
+                        listBeans.get(i).Flag=true;
                         adapter.notifyDataSetChanged();
                     }
                 }else if(img_topleft.getText().toString().equals("取消")){
                     img_topleft.setText("全选");
-                    for(int i=0;i<list.size();i++){
-                        list.get(i).Flag=false;
+                    for(int i=0;i<listBeans.size();i++){
+                        listBeans.get(i).Flag=false;
                     }
                     adapter.notifyDataSetChanged();
                 }

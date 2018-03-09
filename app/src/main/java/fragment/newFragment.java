@@ -124,25 +124,11 @@ public class newFragment extends Fragment implements View.OnClickListener{
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         view=inflater.inflate(R.layout.fragment_new, container, false);
         initView();
-        MyRegistReciver();
+//        MyRegistReciver();
         mydialog1=new Mydialog(getContext(),"正在获取请稍后");
         mydialog=new Mydialog(getContext(),"正在上传.....");
         return view;
     }
-//    LJDHAA123B0027880
-//
-//            LVSFCAAE16F067586
-//
-//    LVVDB11BXDD167021
-//            LSGPC54U99F082714
-//    LJU8824S4CS021900
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if(mySuccess.isShowing()){
-//
-//        }
-//    }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -175,26 +161,6 @@ public class newFragment extends Fragment implements View.OnClickListener{
                 img2_newfragment.setImageBitmap(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.zqf));
                 img3_newfragment.setImageBitmap(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.zhf));
             }
-//            edt_licheng.setText("");
-//            edit_num.setText("");
-//            tv_tel.setText("");
-//            edt_name.setText("");
-//            edt_price.setText("");
-//            tv_quyue.setText("请选择车商信息");
-//            tv_time.setText("请选择日期");
-//            tv_cartmodel.setText("请选择品牌，车系和车型");
-//            tv_cartFenlei.setText("请选取车辆分类信息");
-//            edit_num.setFocusableInTouchMode(true);
-//            edit_num.setFocusable(true);
-//            edit_num.requestFocus();
-//            BeanFlag.Flag=false;
-//            zqfPath="";zqPath="";zhfPath="";
-//            ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";
-//            str="";
-//            tv_cartFenlei.setBackgroundResource(R.drawable.juxingnull);
-//            img_newfragment.setImageBitmap(BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.zq45d));
-//            img2_newfragment.setImageBitmap(BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.zqf));
-//            img3_newfragment.setImageBitmap(BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.zhf));
         }
 //        getSubStr(edt_licheng);
 //        getSubStr(edt_price);

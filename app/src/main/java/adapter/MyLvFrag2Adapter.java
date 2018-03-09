@@ -1,6 +1,7 @@
 package adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -73,10 +74,13 @@ public class MyLvFrag2Adapter extends BaseAdapter {
         holder.tv_company.setText(list.get(i).name);
         holder.tv_num1.setText(list.get(i).vin);
         holder.tv_num2.setText(list.get(i).licensePlate);
+        Log.e("TAG","AdapterFlag=="+list.get(i).Flag);
         if(list.get(i).Flag){
             holder.img_select.setImageResource(R.mipmap.icon02);
+            Log.e("TAG","选择");
         }else{
             holder.img_select.setImageResource(R.mipmap.icon01);
+            Log.e("TAG","取消");
         }
         holder.img_select.setOnClickListener(new View.OnClickListener() {
             @Override
