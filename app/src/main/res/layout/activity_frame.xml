@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FrameActivity"
+    android:background="#ffffff">
+    <RelativeLayout
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/TopView_BottemLinear"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/titleBar"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:id="@+id/TopView_Bottem1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:id="@+id/Img1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/banyuan" />
+
+                <TextView
+                    android:id="@+id/Tv1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Img1"
+                    android:layout_centerHorizontal="true"
+                    android:text="待补充车源"
+                    android:textColor="#000000" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/TopView_Bottem2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:id="@+id/Img2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/shangchuan" />
+
+                <TextView
+                    android:id="@+id/Tv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Img2"
+                    android:layout_centerHorizontal="true"
+                    android:text="待上传车源" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/TopView_Bottem3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:id="@+id/Img3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/yshangchuan" />
+
+                <TextView
+                    android:id="@+id/Tv3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Img3"
+                    android:layout_centerHorizontal="true"
+                    android:text="已上传车源" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/TopView_Bottem4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:id="@+id/Img4"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@mipmap/wode" />
+
+                <TextView
+                    android:id="@+id/Tv4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Img4"
+                    android:layout_centerHorizontal="true"
+                    android:text="我的" />
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/TopView_FragmentGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/TopView_BottemLinear"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">车辆信息补录</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_take_phote">TakePhoteActivity</string>
+    <string name="title_activity_show_croppered">ShowCropperedActivity</string>
+</resources>

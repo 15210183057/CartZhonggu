@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:text="请选择销售名和电话"
+                android:background="@drawable/denglu_bg"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+            <Button
+                android:background="@drawable/denglu_bg"
+                android:layout_marginRight="0dp"
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:text="手动添加"
+                android:textColor="#fff"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/linear"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tv1"
+                    android:layout_alignParentRight="true"
+                    android:text="销售姓名"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/readjuxing"
+
+                    android:layout_centerVertical="true"
+                    android:textColor="#fff"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/tv1"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/edt_username"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="请输入销售名"
+                    android:textSize="14sp"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true"
+                    android:text="销售姓名"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/readjuxing"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#fff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <LinearLayout
+
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <EditText
+                    android:id="@+id/edt_usertel"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_height="50dp"
+                    android:hint="请输入销售电话"
+                    android:textSize="14sp"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:visibility="gone"
+                    android:text="联系电话"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/readjuxing"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#fff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:text="确认"
+                android:textColor="#fff"
+                android:background="@drawable/denglu_bg"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
+
+        <ListView
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lv">
+
+        </ListView>
+    </LinearLayout>
+</LinearLayout>

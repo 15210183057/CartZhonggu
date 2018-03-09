@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#fff">
+        <ImageView
+            android:id="@+id/img_msg_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/output"/>
+        <TextView
+            android:id="@+id/tv_msg_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="待补充车源"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/linear_msg"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:orientation="vertical"
+            android:background="#fff">
+            <View
+
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000"/>
+
+            <TextView
+                android:id="@+id/tv_msg_save"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+               android:layout_centerInParent="true"
+                android:textSize="18sp"
+                android:background="@drawable/denglu_bg"
+                android:text="保存"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_above="@id/linear_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ProgressBar
+                android:id="@+id/pro"
+                android:layout_alignParentTop="true"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:progressDrawable="@drawable/pg"
+                android:layout_height="5dp"
+                android:visibility="gone"/>
+            <WebView
+                android:layout_above="@id/linear_msg"
+                android:id="@+id/web_msg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></WebView>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
