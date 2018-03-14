@@ -141,7 +141,7 @@ public class FileUtil {
 		}
 		Log.e("TAG","fileName=="+fileName);
 		File file = new File(fileName);
-		Log.e("TAG","保存图片=bitmap="+fileName+"=="+buffer.toByteArray().length/1024);
+		Log.e("TAG","保存图片=bitmap="+fileName+"=="+buffer.toByteArray().length/1024+"width=="+bitmap.getWidth()+"/"+bitmap.getHeight());
 		jpegName = fileName;
 		if(file.exists()){
 			return;

@@ -66,7 +66,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
         // Inflate the layout for this fragment
         list=new ArrayList<BuCartListBean>();
 
-        getBuCartList(i);
+//        getBuCartList(i);
 
         view=inflater.inflate(R.layout.fragment_fragment1, container, false);
          img_topleft=view.findViewById(R.id.img_left);

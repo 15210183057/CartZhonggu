@@ -15,13 +15,17 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -44,6 +48,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,11 +65,13 @@ import bean.ZQFBean;
 import camera.CameraActivity;
 import camera.FileUtil;
 import fragment.newFragment;
+import utils.ImgRote;
 import utils.MyModelDialog;
 import utils.MySuccess;
 import utils.Mydialog;
 import utils.NameAndTelDialog;
 import utils.SharedUtils;
+import utils.getPicTku;
 
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
@@ -99,11 +106,15 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     SharedUtils utils = new SharedUtils();
     public int count ;//记录保存多少条数据
     String posion;
+    public static final int PHOTOTAKE = 1; // 拍照
+    private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_bu_message);
+        setPermissions();
         MyRegistReciver();
         initView();
         posion=getIntent().getStringExtra("i");
@@ -361,6 +372,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 img_newfragment.setBackgroundResource(0);
                 picName="zuoqian";
                 getPicView(img_newfragment);
+
 //               if( setPermissions()) {
 //                Intent intent3=new Intent(getContext(),CameraActivity.class);
 //                intent3.putExtra("name","zuoqian");
@@ -397,12 +409,16 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
             case R.id.tv_paizhao2:
                 //调取相机功能
 //                startActivity(new Intent(getContext(), TakePhoteActivity.class));
-                if(setPermissions()) {
-                    Intent intent5 = new Intent(this, CameraActivity.class);
-                    intent5.putExtra("name", picName);
-                    intent5.putExtra("height", "466");
-                    startActivity(intent5);
-                }
+                Log.e("TAG","调用本地相机");
+                getXiangji(picName);
+//                if(setPermissions()) {
+//                    Intent intent5 = new Intent(this, CameraActivity.class);
+//                    intent5.putExtra("name", picName);
+//                    int h=this.getWindowManager().getDefaultDisplay().getHeight();
+//                    Log.e("TAG","屏幕高度=="+h);
+//                    intent5.putExtra("height", "466");
+//                    startActivity(intent5);
+//                }
                 window.dismiss();
                 break;
             case R.id.tv_xiangce2:
@@ -560,7 +576,8 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
             Manifest.permission.READ_EXTERNAL_STORAGE,  //读取权限
             Manifest.permission.WRITE_CALL_LOG,        //读取设备信息
             Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS
     };
     /**
      * 设置Android6.0的权限申请
@@ -577,7 +594,6 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     }
     //获取popwindow
     ImageView selectImag=null;
-    private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private void getPicView(ImageView imageView){
         selectImag=imageView;
         popView= View.inflate(this,R.layout.popwiew2,null);
@@ -629,7 +645,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         tv_canle.setOnClickListener(this);
         Log.e("TAG","window=="+window.getWidth()+"height=="+window.getHeight());
     }
-    //调取本地相机
+    //调取本地图库
     public void takePicture(){
         // 激活系统图库，选择一张图片
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -662,27 +678,15 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //                    photoPath  = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
 //                    cursor.close();
 //                    Log.i(TAG, "photoPath = "+photoPath+"length=="+new File(photoPath).length()/1024);
-                photoPath=getImageAbsolutePath(this,uri);
+                photoPath= getPicTku.getImageAbsolutePath(this,uri);
                 Log.e("TAG","photoPath=="+photoPath);
                 if(photoPath!=null) {
                     // 设置参数
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = true; // 只获取图片的大小信息，而不是将整张图片载入在内存中，避免内存溢出
-                    BitmapFactory.decodeFile(photoPath, options);
-                    int height = options.outHeight;
-                    int width= options.outWidth;
-                    int inSampleSize = 2; // 默认像素压缩比例，压缩为原图的1/2
-                    int minLen = Math.min(height, width); // 原图的最小边长
-                    if(minLen > 100) { // 如果原始图像的最小边长大于100dp（此处单位我认为是dp，而非px）
-                        float ratio = (float)minLen / 100.0f; // 计算像素压缩比例
-                        inSampleSize = (int)ratio;
-                    }
-                    options.inJustDecodeBounds = false; // 计算好压缩比例后，这次可以去加载原图了
-                    options.inSampleSize = inSampleSize; // 设置为刚才计算的压缩比例
-                    Bitmap bm = BitmapFactory.decodeFile(photoPath, options); // 解码文件
-                    Log.w("TAG", "size: " + bm.getByteCount()/1024 + " width: " + bm.getWidth() + " heigth:" + bm.getHeight()); // 输出图像数据
-                    selectImag.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    selectImag.setImageBitmap(bm);
+                  Bitmap  bm=ImgRote.getyasuo(photoPath);
+//                    selectImag.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    selectImag.setScaleType(ImageView.ScaleType.FIT_XY);
+//                    selectImag.setImageBitmap(bm);
+                    bm=ImgRote.rotateBitmapByDegree(bm,ImgRote.getBitmapDegree(photoPath));
                     new FileUtil(this).saveBitmap(bm);
                     photoPath=FileUtil.getJpegName();
                     selectImag.setImageBitmap(new FileUtil(this).readBitmap(photoPath));
@@ -698,6 +702,32 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 }else if(selectImag==img_newfragment){
                     zqfPath=photoPath;
                     Log.e("TAG","图库里的path=="+zqfPath);
+                }
+            }
+        }else if(requestCode==PHOTOTAKE){
+//            Bundle bundle = data.getExtras();
+//            Bitmap bit= (Bitmap) bundle.get("data");
+            Bitmap  bit=BitmapFactory.decodeFile(imgtakePath);
+            Log.e("TAG", "bit压缩前==" + bit.getWidth() + "/" + bit.getHeight());
+            if(bit!=null) {
+                bit = ImgRote.getyasuo(imgtakePath);
+                bit = ImgRote.rotateBitmapByDegree(bit, ImgRote.getBitmapDegree(imgtakePath));
+                Log.e("TAG", "bit压缩后==" + bit.getWidth() + "/" + bit.getHeight());
+                new FileUtil(this).saveBitmap(bit);
+                if (picName.equals("zuoqian")) {
+                    img_newfragment.setScaleType(ImageView.ScaleType.FIT_XY);
+                    img_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    zqPath = FileUtil.getJpegName();
+                    Log.e("TAG", "length==" + new File(zqPath).length() / 1024);
+                } else if (picName.equals("zhengqian")) {
+                    img2_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    zqPath = FileUtil.getJpegName();
+                    Log.e("TAG", "length==" + new File(zqPath).length() / 1024);
+                } else if (picName.equals("zhenghou")) {
+                    img3_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    zhfPath = FileUtil.getJpegName();
+                    Log.e("TAG", "length==" + new File(zhfPath).length() / 1024);
+
                 }
             }
         }
@@ -718,6 +748,13 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         intentFilter.addAction("strNameAndTelAndID");
         registerReceiver(myBroadcastReceiver,intentFilter);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(myBroadcastReceiver);
+    }
+
     //接受广播退出APP
     public class MyBroadcastReceiver extends BroadcastReceiver {
 
@@ -933,98 +970,30 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    @TargetApi(19)
-    public static String getImageAbsolutePath(Activity context, Uri imageUri) {
-        if (context == null || imageUri == null)
-            return null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, imageUri)) {
-            if (isExternalStorageDocument(imageUri)) {
-                String docId = DocumentsContract.getDocumentId(imageUri);
-                String[] split = docId.split(":");
-                String type = split[0];
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-            } else if (isDownloadsDocument(imageUri)) {
-                String id = DocumentsContract.getDocumentId(imageUri);
-                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-                return getDataColumn(context, contentUri, null, null);
-            } else if (isMediaDocument(imageUri)) {
-                String docId = DocumentsContract.getDocumentId(imageUri);
-                String[] split = docId.split(":");
-                String type = split[0];
-                Uri contentUri = null;
-                if ("image".equals(type)) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-                String selection = MediaStore.Images.Media._ID + "=?";
-                String[] selectionArgs = new String[]{split[1]};
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-            }
-        } // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(imageUri.getScheme())) {
-            // Return the remote address
-            if (isGooglePhotosUri(imageUri))
-                return imageUri.getLastPathSegment();
-            return getDataColumn(context, imageUri, null, null);
+    //获取相机
+    String imgtakePath;
+    public void getXiangji(String picName){
+//        selectImag=img;
+        String  photoSaveName = String.valueOf(System.currentTimeMillis()) + ".jpg";
+        String  photoSavePath=this.getExternalCacheDir().getAbsolutePath()+"/";
+        imgtakePath=photoSavePath+photoSaveName;//图片完整路径
+        Log.e("TAG","这里获取完整路=="+imgtakePath);
+        Uri imageUri = null;
+        File file=new File(imgtakePath);
+        if(!file.exists()){
+            file.getParentFile();
         }
-        // File
-        else if ("file".equalsIgnoreCase(imageUri.getScheme())) {
-            return imageUri.getPath();
+        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {  //针对Android7.0，需要通过FileProvider封装过的路径，提供给外部调用
+            Log.e("TAG","这里走到了吗》7.0");
+            openCameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Log.e("TAG","file=="+file);
+            imageUri = FileProvider.getUriForFile(BuMessageActivity.this, "com.example.a123456.cartzhonggu.fileprovider", file);//通过FileProvider创建一个content类型的Uri，进行封装
+            Log.e("TAG","这里走到了下》7.0");
+        } else { //7.0以下，
+            imageUri=Uri.fromFile(file);
         }
-        return null;
-    }
-
-    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-        Cursor cursor = null;
-        String column = MediaStore.Images.Media.DATA;
-        String[] projection = {column};
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                int index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-        return null;
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(openCameraIntent, PHOTOTAKE);
     }
 }

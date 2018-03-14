@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import utils.BitZip;
+import utils.ImgRote;
 
 @SuppressWarnings("deprecation")
 public class CameraInterface extends Service{

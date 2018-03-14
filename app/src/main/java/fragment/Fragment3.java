@@ -196,7 +196,7 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
         intent.putExtra("cartmodel",list.get(i).brandName+list.get(i).seriseName+list.get(i).modelName);
         intent.putExtra("licheng",list.get(i).mileage);
         intent.putExtra("price",list.get(i).price);
-Log.e("TAG","list=="+list.get(i).price);
+
         intent.putExtra("quyuID",list.get(i).quyuID);
         intent.putExtra("brandID",list.get(i).brandid);
         intent.putExtra("seriseID",list.get(i).seriseID);

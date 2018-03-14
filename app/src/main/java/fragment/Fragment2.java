@@ -21,6 +21,10 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.xutils.common.util.KeyValue;
+import org.xutils.http.RequestParams;
+import org.xutils.http.body.MultipartBody;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +47,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     private List<CarBean> list;
     private MyLvFrag2Adapter adapter;
     private int count;
+    List<BuCartListBean>listBeans=new ArrayList<BuCartListBean>();
+
     public Fragment2() {
         // Required empty public constructor
     }
@@ -52,6 +58,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        upDate();
         view=inflater.inflate(R.layout.fragment_fragment2, container, false);
         img_topleft=view.findViewById(R.id.img_left);
         img_topright=view.findViewById(R.id.img_right);
@@ -123,7 +130,6 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
             }
         });
     }
-    List<BuCartListBean>listBeans;
 
     @Override
     public void onAttach(Context context) {
@@ -136,9 +142,10 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         Log.e("TAG","onHiddenChanged==="+isVisibleToUser);
         setDate();
         Log.e("TAG","listbean.size=="+listBeans.size());
-//        if(listBeans!=null){
-//            adapter.notifyDataSetChanged();
-//        }
+        if(listBeans!=null){
+            adapter.setCall(this);
+            adapter.notifyDataSetChanged();
+        }
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -154,7 +161,6 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 //            list.add(carBean);
 //            count=i;
 //        }
-        listBeans=new ArrayList<BuCartListBean>();
         //读取本地数据
         SharedUtils sharedUtils=new SharedUtils();
         String str=sharedUtils.readXML(MyApplication.cartlistmsg,"count",getActivity());
@@ -162,7 +168,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         if(!TextUtils.isEmpty(str)) {
            size  = Integer.parseInt(str);
         }
-       for(int i=0;i<size;i++) {
+        listBeans.clear();
+        for(int i=0;i<size;i++) {
            BuCartListBean buCartListBean = new BuCartListBean();
            String posion=sharedUtils.readXML(MyApplication.cartlistmsg,"posion"+i,getActivity());
            Log.e("TAG","posion=="+posion);
@@ -176,7 +183,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                             &&!buCartListBean.licensePlate.isEmpty()){
                listBeans.add(buCartListBean);
            }else{
-               Log.e("TAG","为空");
+//               Log.e("TAG","为空");
            }
        }
     }
@@ -199,6 +206,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
             img_topleft.setText("取消");
             adapter.notifyDataSetChanged();
         }
+        Log.e("TAG","最后提交=="+listBeans.get(i).Flag);
         adapter.notifyDataSetChanged();
     }
 
@@ -221,5 +229,22 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                 }
                 break;
         }
+    }
+    private void upDate(){
+        RequestParams requestParams=new RequestParams();
+        List<KeyValue>list=new ArrayList<>();
+        for(int i=0;i<5;i++){
+            list.add(new KeyValue("canshu","item="+i));
+        }
+//        requestParams.addBodyParameter("",list.toString());
+        requestParams.setAutoResume(true);
+
+        MultipartBody body=new MultipartBody(list,"UTF-8");
+        requestParams.setRequestBody(body);
+        requestParams.setMultipart(true);
+        Log.e("TAG","上传惨淡--"+requestParams.getBodyParams());
+//        MultipartBody multipartBody=new MultipartBody(new ArrayList<KeyValue>(),"utf-8");
+//        requestParams.setRequestBody(multipartBody);
+//        requestParams.addParameter("",new ArrayList<String>());
     }
 }
