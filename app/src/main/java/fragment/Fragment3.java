@@ -79,7 +79,7 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
         intentFilter.addAction("f3");
         getActivity().registerReceiver(my,intentFilter);
         list=new ArrayList<BuCartListBean>();
-
+        Log.e("TAG","地址=="+list);
         getBuCartList(i);
         view=inflater.inflate(R.layout.fragment_fragment3, container, false);
         img_topleft=view.findViewById(R.id.img_left);
@@ -159,6 +159,7 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
                         i++;
                         getBuCartList(i);
                         Log.e("TAG","list=="+list.size());
+                        Log.e("TAG","地址222=="+list);
 //                        if(!TextUtils.isEmpty(BUCartListBeanNUm.last_page)&&i<Integer.parseInt(BUCartListBeanNUm.last_page)) {
 //                            i++;
 //                            getBuCartList(i);

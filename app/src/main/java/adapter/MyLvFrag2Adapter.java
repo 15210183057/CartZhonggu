@@ -13,15 +13,17 @@ import com.example.a123456.cartzhonggu.R;
 
 import java.util.List;
 
+import bean.Bran;
 import bean.BuCartListBean;
 import bean.CarBean;
+import bean.UserBean;
 
 public class MyLvFrag2Adapter extends BaseAdapter {
 //    private List<CarBean> list;
-    private List<BuCartListBean> list;
+    private List<Bran> list;
     private Context ctx;
     public SelectCallBack call;
-    public MyLvFrag2Adapter (Context ctx,List<BuCartListBean> list){
+    public MyLvFrag2Adapter (Context ctx,List<Bran> list){
         this.ctx=ctx;
         this.list=list;
     }
@@ -54,11 +56,16 @@ public class MyLvFrag2Adapter extends BaseAdapter {
             holder.tv_company=view.findViewById(R.id.tv_company_mylvitem);
             holder.tv_num2=view.findViewById(R.id.tv_num2_mylvitem);
             holder.img_select=view.findViewById(R.id.img_item_mylv_select);
+
+            holder.tv_modelname=view.findViewById(R.id.tv_model_mylvitem);//车型
+            holder.tv_cheshang=view.findViewById(R.id.tv_company_mylvitem);//车商
+            holder.tv_time=view.findViewById(R.id.tv_time_itemylv2);
+            holder.tv_username=view.findViewById(R.id.tv_user_itemylv2);
             view.setTag(holder);
         }else{
             holder= (ViewHolder) view.getTag();
         }
-        String str=list.get(i).cardType;
+        String str=list.get(i).brandname;
         for(int h=0;h<str.length();h++){
             char  item =  str.charAt(h);
             if(item<='Z'&&item>='A'){
@@ -71,16 +78,17 @@ public class MyLvFrag2Adapter extends BaseAdapter {
         }
         str=str.replace("（","");
         holder.tv_name.setText(str);
-        holder.tv_company.setText(list.get(i).name);
+//        holder.tv_company.setText(list.get(i).cheshang);
         holder.tv_num1.setText(list.get(i).vin);
-        holder.tv_num2.setText(list.get(i).licensePlate);
-        Log.e("TAG","AdapterFlag=="+list.get(i).Flag);
+//        holder.tv_num2.setText(list.get(i).licensePlate);//车牌
+        holder.tv_time.setText(list.get(i).date);
+        holder.tv_username.setText(UserBean.username);
+        holder.tv_modelname.setText(list.get(i).modelname);
+        holder.tv_cheshang.setText(list.get(i).cheshang);
         if(list.get(i).Flag){
             holder.img_select.setImageResource(R.mipmap.icon02);
-            Log.e("TAG","选择");
         }else{
             holder.img_select.setImageResource(R.mipmap.icon01);
-            Log.e("TAG","取消");
         }
         holder.img_select.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +101,7 @@ public class MyLvFrag2Adapter extends BaseAdapter {
     public class ViewHolder{
         TextView tv_name,tv_company,tv_num1,tv_num2;
         ImageView img_select;
+        TextView tv_modelname,tv_cheshang,tv_time,tv_username;
     }
     public interface SelectCallBack{
       void  call(int i);

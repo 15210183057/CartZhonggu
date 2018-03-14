@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -57,6 +58,7 @@ import java.util.List;
 import application.MyApplication;
 import base.BaseActivity;
 import bean.BeanFlag;
+import bean.Bran;
 import bean.ModelNameandID;
 import bean.MyNewUpdate;
 import bean.ZHFBean;
@@ -66,6 +68,8 @@ import camera.CameraActivity;
 import camera.FileUtil;
 import fragment.newFragment;
 import utils.ImgRote;
+import utils.MyDBUtils;
+import utils.MyDateDB;
 import utils.MyModelDialog;
 import utils.MySuccess;
 import utils.Mydialog;
@@ -212,13 +216,6 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.edt_name:
                 edt_name.setText("");
-//                if(BeanFlag.Flag){
-//                    if(NameAndTel.NameAndTellist!=null){
-//                        NameAndTelDialog nameAndTelDialog = new NameAndTelDialog(getContext(),NameAndTel.NameAndTellist.get(Integer.parseInt(currentID)));
-//                        nameAndTelDialog.show();
-//                    }
-//                }
-//                setName();
                 break;
             case R.id.tv_getmodel:
                 //获取车型车系车牌
@@ -346,16 +343,12 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                     }else {
 
                         if (TextUtils.isEmpty(zqfPath)){
-                            //img_newfragment.getDrawable().getCurrent().getConstantState()==getResources().getDrawable(R.drawable.zq45d).getConstantState()
-//                             img_newfragment.setImageDrawable(getActivity().getDrawable(R.drawable.rednull));
                             Toast.makeText(this,"左前45°图片不能为空",Toast.LENGTH_LONG).show();
                         }
                         else if (TextUtils.isEmpty(zqPath)){
-//                             img2_newfragment.setImageDrawable(getActivity().getDrawable(R.drawable.rednull));
                             Toast.makeText(this,"正前图片不能为空",Toast.LENGTH_LONG).show();
                         }
                         else if (TextUtils.isEmpty(zhfPath)){
-//                             img3_newfragment.setImageDrawable(getActivity().getDrawable(R.drawable.rednull));
                             Toast.makeText(this,"正后图片不能为空",Toast.LENGTH_LONG).show();
                         }else {
 //                            mydialog.show();
@@ -434,19 +427,49 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initGetDate() {
-        count++;
-        Log.e("TAG","count条数=="+count);
-        utils.saveXML(MyApplication.cartlistmsg,"vin"+posion,edit_num.getText().toString(),this);
-        utils.saveXML(MyApplication.cartlistmsg,"name"+posion,tv_cartmodel.getText().toString(),this);
-        utils.saveXML(MyApplication.cartlistmsg,"licensePlate"+posion,tv_quyue.getText().toString(),this);
-        utils.saveXML(MyApplication.cartlistmsg,"cardType"+posion,tv_cartmodel.getText().toString()
-                ,this);
-        //当前key值的posion
-        Log.e("TAG","存入的所有posion"+"posion=="+posion+"=="+count);
-        utils.saveXML(MyApplication.cartlistmsg,"posion"+count,posion,this);
-        //一共保存条数count
-        utils.saveXML(MyApplication.cartlistmsg,"count",count+"",this);
-        Toast.makeText(this,"保存",Toast.LENGTH_SHORT).show();
+//        count++;
+//        Log.e("TAG","count条数=="+count);
+//        utils.saveXML(MyApplication.cartlistmsg,"vin"+posion,edit_num.getText().toString(),this);
+//        utils.saveXML(MyApplication.cartlistmsg,"name"+posion,tv_cartmodel.getText().toString(),this);
+//        utils.saveXML(MyApplication.cartlistmsg,"licensePlate"+posion,tv_quyue.getText().toString(),this);
+//        utils.saveXML(MyApplication.cartlistmsg,"cardType"+posion,tv_cartmodel.getText().toString()
+//                ,this);
+//        //当前key值的posion
+//        Log.e("TAG","存入的所有posion"+"posion=="+posion+"=="+count);
+//        utils.saveXML(MyApplication.cartlistmsg,"posion"+count,posion,this);
+//        //一共保存条数count
+//        utils.saveXML(MyApplication.cartlistmsg,"count",count+"",this);
+//        Toast.makeText(this,"保存",Toast.LENGTH_SHORT).show();
+//        finish();
+        MyDBUtils myDBUtils=new MyDBUtils(this);
+        String[] str=new String[]{"7",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
+                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
+                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
+                "img4","img5","img6","img7","img8","img9"
+        };
+
+        String[] str2=new String[]{"8",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
+                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
+                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
+                "img4","img5","img6","img7","img8","img9"
+        };
+        List<Bran>branlist=myDBUtils.chaXun();
+        if(branlist.size()>0) {
+            for (int i = 0; i < branlist.size(); i++) {
+                if (branlist.get(i).itemid.equals("6")) {
+                    myDBUtils.setBulu(str);
+                } else {
+                    if (i == branlist.size() - 1) {
+                        myDBUtils.addBuLu(str);
+                        myDBUtils.addBuLu(str2);
+                    }
+                }
+            }
+        }else{
+            myDBUtils.addBuLu(str);
+        }
         finish();
     }
 
@@ -717,8 +740,8 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 if (picName.equals("zuoqian")) {
                     img_newfragment.setScaleType(ImageView.ScaleType.FIT_XY);
                     img_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
-                    zqPath = FileUtil.getJpegName();
-                    Log.e("TAG", "length==" + new File(zqPath).length() / 1024);
+                    zqfPath = FileUtil.getJpegName();
+                    Log.e("TAG", "length==" + new File(zqfPath).length() / 1024);
                 } else if (picName.equals("zhengqian")) {
                     img2_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
                     zqPath = FileUtil.getJpegName();

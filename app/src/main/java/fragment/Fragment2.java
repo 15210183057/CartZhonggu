@@ -31,8 +31,10 @@ import java.util.List;
 
 import adapter.MyLvFrag2Adapter;
 import application.MyApplication;
+import bean.Bran;
 import bean.BuCartListBean;
 import bean.CarBean;
+import utils.MyDBUtils;
 import utils.SharedUtils;
 
 /**
@@ -47,8 +49,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     private List<CarBean> list;
     private MyLvFrag2Adapter adapter;
     private int count;
-    List<BuCartListBean>listBeans=new ArrayList<BuCartListBean>();
-
+    List<Bran>listBeans;
+    MyDBUtils utils;
     public Fragment2() {
         // Required empty public constructor
     }
@@ -59,6 +61,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         upDate();
+        listBeans=new ArrayList<Bran>();
+        utils=new MyDBUtils(getContext());
         view=inflater.inflate(R.layout.fragment_fragment2, container, false);
         img_topleft=view.findViewById(R.id.img_left);
         img_topright=view.findViewById(R.id.img_right);
@@ -70,6 +74,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         img_f2_center=view.findViewById(R.id.img_f2_center);
         tv_f2_null=view.findViewById(R.id.tv_f2_null);
         img_topleft.setOnClickListener(this);
+        img_topright.setOnClickListener(this);
 
         initView();
         return view;
@@ -89,9 +94,12 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 
         lv=view.findViewById(R.id.lv);
         lv.setOnItemClickListener(this);
-        adapter=new MyLvFrag2Adapter(getActivity(),listBeans);
-        adapter.setCall(this);
-        lv.setAdapter(adapter);
+        if(listBeans!=null) {
+            adapter = new MyLvFrag2Adapter(getActivity(), listBeans);
+            adapter.setCall(this);
+            lv.setAdapter(adapter);
+            Log.e("TAG","initVIew=="+adapter+"list=="+listBeans);
+        }
 //        refreshLayout.setEnableAutoLoadmore(true);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -132,25 +140,24 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.e("TAG","onAttach-------");
-    }
-
-    @Override
     public void onHiddenChanged(boolean isVisibleToUser) {
         Log.e("TAG","onHiddenChanged==="+isVisibleToUser);
         setDate();
-        Log.e("TAG","listbean.size=="+listBeans.size());
         if(listBeans!=null){
-            adapter.setCall(this);
-            adapter.notifyDataSetChanged();
+            if(listBeans.size()>0) {
+                img_f2_center.setVisibility(View.GONE);
+                tv_f2_null.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+            }else{
+                img_f2_center.setVisibility(View.VISIBLE);
+                tv_f2_null.setVisibility(View.VISIBLE);
+            }
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
 
     //设置数据源
-    private void setDate(){
+    private void setDate() {
 //        list=new ArrayList<CarBean>();
 //        for(int i=0;i<20;i++){
 //            CarBean carBean=new CarBean();
@@ -162,30 +169,35 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 //            count=i;
 //        }
         //读取本地数据
-        SharedUtils sharedUtils=new SharedUtils();
-        String str=sharedUtils.readXML(MyApplication.cartlistmsg,"count",getActivity());
-        int size=0;
-        if(!TextUtils.isEmpty(str)) {
-           size  = Integer.parseInt(str);
-        }
+//        SharedUtils sharedUtils=new SharedUtils();
+//        String str=sharedUtils.readXML(MyApplication.cartlistmsg,"count",getActivity());
+//        int size=0;
+//        if(!TextUtils.isEmpty(str)) {
+//           size  = Integer.parseInt(str);
+//        }
+//        listBeans.clear();
+//        for(int i=0;i<size;i++) {
+//           BuCartListBean buCartListBean = new BuCartListBean();
+//           String posion=sharedUtils.readXML(MyApplication.cartlistmsg,"posion"+i,getActivity());
+//           Log.e("TAG","posion=="+posion);
+//           buCartListBean.vin = sharedUtils.readXML(MyApplication.cartlistmsg, "vin" + i, getActivity());
+//           buCartListBean.cardType = sharedUtils.readXML(MyApplication.cartlistmsg, "cardType" + i, getActivity());
+//           buCartListBean.name = sharedUtils.readXML(MyApplication.cartlistmsg, "name" +i , getActivity());
+//           buCartListBean.licensePlate = sharedUtils.readXML(MyApplication.cartlistmsg, "licensePlate" + i, getActivity());
+//           if(!buCartListBean.vin.isEmpty()
+//                         && !buCartListBean.cardType.isEmpty()
+//                            &&!buCartListBean.name.isEmpty()
+//                            &&!buCartListBean.licensePlate.isEmpty()){
+//               listBeans.add(buCartListBean);
+//           }else{
+////               Log.e("TAG","为空");
+//           }
+//       }
         listBeans.clear();
-        for(int i=0;i<size;i++) {
-           BuCartListBean buCartListBean = new BuCartListBean();
-           String posion=sharedUtils.readXML(MyApplication.cartlistmsg,"posion"+i,getActivity());
-           Log.e("TAG","posion=="+posion);
-           buCartListBean.vin = sharedUtils.readXML(MyApplication.cartlistmsg, "vin" + i, getActivity());
-           buCartListBean.cardType = sharedUtils.readXML(MyApplication.cartlistmsg, "cardType" + i, getActivity());
-           buCartListBean.name = sharedUtils.readXML(MyApplication.cartlistmsg, "name" +i , getActivity());
-           buCartListBean.licensePlate = sharedUtils.readXML(MyApplication.cartlistmsg, "licensePlate" + i, getActivity());
-           if(!buCartListBean.vin.isEmpty()
-                         && !buCartListBean.cardType.isEmpty()
-                            &&!buCartListBean.name.isEmpty()
-                            &&!buCartListBean.licensePlate.isEmpty()){
-               listBeans.add(buCartListBean);
-           }else{
-//               Log.e("TAG","为空");
-           }
-       }
+        listBeans .addAll(utils.chaXun());
+        for(int i=0;i<listBeans.size();i++){
+            Log.e("TAG","itemid=="+listBeans.get(i).itemid);
+        }
     }
 
     @Override
@@ -200,11 +212,9 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
             Log.e("TAG","点击Call");
             listBeans.get(i).Flag=false;
             img_topleft.setText("全选");
-            adapter.notifyDataSetChanged();
         }else{
             listBeans.get(i).Flag=true;
             img_topleft.setText("取消");
-            adapter.notifyDataSetChanged();
         }
         Log.e("TAG","最后提交=="+listBeans.get(i).Flag);
         adapter.notifyDataSetChanged();
@@ -227,6 +237,17 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                     }
                     adapter.notifyDataSetChanged();
                 }
+                break;
+            case R.id.img_right:
+                //点击提交
+                for(int i=0;i<listBeans.size();i++){
+                    if(listBeans.get(i).Flag){
+                       Log.e("TAG", listBeans.get(i).itemid);
+                       utils.setDelete(listBeans.get(i).itemid);
+                    }
+                }
+                setDate();
+                adapter.notifyDataSetChanged();
                 break;
         }
     }
