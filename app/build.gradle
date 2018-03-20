@@ -31,5 +31,5 @@ dependencies {
     implementation 'org.xutils:xutils:3.5.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     //Zxing扫描
-    implementation 'com.github.yuzhiqiang1993:zxing:2.1.1'
+    implementation 'com.github.yuzhiqiang1993:zxing:2.0.0'
 }

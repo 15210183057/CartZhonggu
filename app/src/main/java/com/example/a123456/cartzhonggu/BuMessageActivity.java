@@ -442,14 +442,26 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //        Toast.makeText(this,"保存",Toast.LENGTH_SHORT).show();
 //        finish();
         MyDBUtils myDBUtils=new MyDBUtils(this);
-        String[] str=new String[]{"7",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+        String[] str=new String[]{"1",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
                 "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
                 "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
                 "img4","img5","img6","img7","img8","img9"
         };
 
-        String[] str2=new String[]{"8",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+        String[] str2=new String[]{"2",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
+                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
+                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
+                "img4","img5","img6","img7","img8","img9"
+        };
+        String[] str3=new String[]{"3",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
+                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
+                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
+                "img4","img5","img6","img7","img8","img9"
+        };
+        String[] str4=new String[]{"4",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
                 "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
                 "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
@@ -464,11 +476,16 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                     if (i == branlist.size() - 1) {
                         myDBUtils.addBuLu(str);
                         myDBUtils.addBuLu(str2);
+                        myDBUtils.addBuLu(str3);
+                        myDBUtils.addBuLu(str4);
                     }
                 }
             }
         }else{
             myDBUtils.addBuLu(str);
+            myDBUtils.addBuLu(str2);
+            myDBUtils.addBuLu(str3);
+            myDBUtils.addBuLu(str4);
         }
         finish();
     }
@@ -517,6 +534,11 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                         Tv.setBackgroundResource(R.drawable.juxingnull);
                     }
                 }, year, month, day);
+        //设置起始日期和结束日期
+        DatePicker datePicker = dialog3.getDatePicker();
+        //datePicker.setMinDate();
+        datePicker.setMaxDate(System.currentTimeMillis());
+        dialog3.show();
         dialog3.show();
     }
     //判断小数点后面是否都为"0",截取字符串

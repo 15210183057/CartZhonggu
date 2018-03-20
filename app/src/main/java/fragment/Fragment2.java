@@ -155,6 +155,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
+    int h=0;
 
     //设置数据源
     private void setDate() {
@@ -195,6 +196,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 //       }
         listBeans.clear();
         listBeans .addAll(utils.chaXun());
+        Log.e("TAG","查询到的listsize=="+listBeans.size());
         for(int i=0;i<listBeans.size();i++){
             Log.e("TAG","itemid=="+listBeans.get(i).itemid);
         }
@@ -222,33 +224,52 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.img_left:
-                if(img_topleft.getText().toString().equals("全选")){
+                if (img_topleft.getText().toString().equals("全选")) {
                     img_topleft.setText("取消");
-                    for(int i=0;i<listBeans.size();i++){
-                        listBeans.get(i).Flag=true;
+                    for (int i = 0; i < listBeans.size(); i++) {
+                        listBeans.get(i).Flag = true;
                         adapter.notifyDataSetChanged();
                     }
-                }else if(img_topleft.getText().toString().equals("取消")){
+                } else if (img_topleft.getText().toString().equals("取消")) {
                     img_topleft.setText("全选");
-                    for(int i=0;i<listBeans.size();i++){
-                        listBeans.get(i).Flag=false;
+                    for (int i = 0; i < listBeans.size(); i++) {
+                        listBeans.get(i).Flag = false;
                     }
                     adapter.notifyDataSetChanged();
                 }
                 break;
             case R.id.img_right:
                 //点击提交
-                for(int i=0;i<listBeans.size();i++){
-                    if(listBeans.get(i).Flag){
-                       Log.e("TAG", listBeans.get(i).itemid);
-                       utils.setDelete(listBeans.get(i).itemid);
+                List<Integer>list=new ArrayList<>();
+                for (int i = 0; i < listBeans.size(); i++) {
+                    h = i;
+                    Log.e("TAG", "OK==listSizeBean==h==" + h + "====" + listBeans.size());
+                    if (listBeans.get(h).Flag) {
+                        Log.e("TAG", "i%2==" + (h % 2));
+                        if (h % 2 == 0) {
+                            utils.setDelete(listBeans.get(h).itemid);
+                            Log.e("TAG", "上传成功==" + h);
+                            Toast.makeText(getContext(), "上传成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("TAG", "上传失败==" + h);
+                            list.add(h);
+                            Toast.makeText(getContext(), "上传失败", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-                setDate();
-                adapter.notifyDataSetChanged();
-                break;
+                    if (h == listBeans.size() - 1) {
+                        Log.e("TAG", "刷线==");
+                        for(int i=0;i<list.size();i++){
+                            Toast.makeText(getContext(),"第"+i+"条数据上传失败",Toast.LENGTH_SHORT).show();
+                            Log.e("TAG","第"+i+"条数据上传失败");
+                        }
+                        setDate();
+                        adapter.notifyDataSetChanged();
+
+                    }
+                    break;
         }
     }
     private void upDate(){
