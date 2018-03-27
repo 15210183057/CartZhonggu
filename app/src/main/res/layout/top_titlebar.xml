@@ -6,8 +6,8 @@
     >
     <ImageView
         android:id="@+id/img_left"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:src="@mipmap/qx"

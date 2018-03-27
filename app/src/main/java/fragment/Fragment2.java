@@ -142,6 +142,9 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     @Override
     public void onHiddenChanged(boolean isVisibleToUser) {
         Log.e("TAG","onHiddenChanged==="+isVisibleToUser);
+        if(isVisibleToUser){
+            img_topleft.setText("全选");
+        }
         setDate();
         if(listBeans!=null){
             if(listBeans.size()>0) {
@@ -242,6 +245,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                 break;
             case R.id.img_right:
                 //点击提交
+                int count=0;
                 List<Integer>list=new ArrayList<>();
                 for (int i = 0; i < listBeans.size(); i++) {
                     h = i;
@@ -249,6 +253,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                     if (listBeans.get(h).Flag) {
                         Log.e("TAG", "i%2==" + (h % 2));
                         if (h % 2 == 0) {
+                            count++;
                             utils.setDelete(listBeans.get(h).itemid);
                             Log.e("TAG", "上传成功==" + h);
                             Toast.makeText(getContext(), "上传成功", Toast.LENGTH_SHORT).show();
@@ -259,6 +264,9 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                         }
                     }
                 }
+                if(count==list.size()){
+                    Toast.makeText(getActivity(),"请选择提交数据",Toast.LENGTH_SHORT).show();
+                }
                     if (h == listBeans.size() - 1) {
                         Log.e("TAG", "刷线==");
                         for(int i=0;i<list.size();i++){
@@ -267,7 +275,6 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                         }
                         setDate();
                         adapter.notifyDataSetChanged();
-
                     }
                     break;
         }

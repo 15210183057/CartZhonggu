@@ -238,6 +238,30 @@
                         android:layout_marginLeft="10dp"
                         android:gravity="center_vertical"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+                    <TextView
+                        android:id="@+id/tv_guohu"
+                        android:layout_width="0dp"
+                        android:layout_weight="5"
+                        android:layout_height="match_parent"
+                        android:text="  请选择车辆是否过户"
+                        android:background="@drawable/juxingnull"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+
+                        android:text="是否过户"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
             </LinearLayout>
             <RelativeLayout
                 android:layout_width="match_parent"

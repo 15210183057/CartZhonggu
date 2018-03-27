@@ -83,9 +83,11 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     private ImageView img_paizhao;
     private EditText edit_num;
     private View view;
-    private PopupWindow window;
-    private View popView,BrandPopView,SerisePopView;
+    private PopupWindow window,window2,window3;
+    private View popView,popView2,popView3;
     private TextView tv_paizhao,tv_canle,tv_xiangce;
+    private TextView tv_paizhao2,tv_canle2,tv_xiangce2;
+    private TextView tv_paizhao3,tv_canle3,tv_xiangce3;
     private ImageView img_topleft,img_topright;
     private TextView tv_topcenter;
     private TextView tv_time;//注册日期
@@ -112,7 +114,8 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     String posion;
     public static final int PHOTOTAKE = 1; // 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
-
+    private TextView Tv_guohu;
+    private String guohuID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +135,10 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         img_topright=findViewById(R.id.img_right);
         tv_topcenter=findViewById(R.id.tv_center);
         tv_topcenter.setText("待补充车源");
-        img_topleft.setVisibility(View.GONE);
+//        img_topleft.setVisibility(View.GONE);
+        img_topleft.setImageDrawable(this.getResources().getDrawable(R.mipmap.back));
+        img_topleft.setOnClickListener(this);
+
         img_topright.setVisibility(View.GONE);
 
         tv_getprice=findViewById(R.id.tv_getprice);
@@ -161,6 +167,8 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 
         btn_commit=findViewById(R.id.btn_commit);//提交按钮
 
+        Tv_guohu=findViewById(R.id.tv_guohu);//是否过户
+
         img_paizhao.setOnClickListener(this);
         tv_time.setOnClickListener(this);
         btn_commit.setOnClickListener(this);
@@ -180,6 +188,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         edt_name.setOnClickListener(this);
         tv_getmodel=findViewById(R.id.tv_getmodel);
         tv_getmodel.setOnClickListener(this);
+        Tv_guohu.setOnClickListener(this);
     }
     class MyEditTextChangeListener implements TextWatcher {
         EditText editText;
@@ -214,6 +223,12 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.img_left:
+                finish();
+                break;
+            case R.id.tv_guohu:
+                getGuohu();
+                break;
             case R.id.edt_name:
                 edt_name.setText("");
                 break;
@@ -305,6 +320,9 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 }else if (TextUtils.isEmpty(tv_cartFenlei.getText().toString())||tv_cartFenlei.getText().toString().trim().equals("请选取车辆分类信息")) {
                     tv_cartFenlei.setBackgroundResource(R.drawable.rednull);
                     Toast.makeText(this,"车辆分类信息不能为空",Toast.LENGTH_LONG).show();
+                }else if (TextUtils.isEmpty(Tv_guohu.getText().toString())||Tv_guohu.getText().toString().trim().equals("请选择车辆是否过户")) {
+                    Tv_guohu.setBackgroundResource(R.drawable.rednull);
+                    Toast.makeText(this,"过户信息不能为空",Toast.LENGTH_LONG).show();
                 }else if(!IsNullEdit(edt_licheng)){
                     Toast.makeText(this,"里程不能为空",Toast.LENGTH_LONG).show();
                 }
@@ -412,16 +430,32 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //                    intent5.putExtra("height", "466");
 //                    startActivity(intent5);
 //                }
-                window.dismiss();
+                window2.dismiss();
                 break;
             case R.id.tv_xiangce2:
                 takePicture();
-                window.dismiss();
+                window2.dismiss();
                 break;
             case R.id.tv_canle2:
                 if(window!=null&&window.isShowing()){
-                    window.dismiss();
+                    window2.dismiss();
                 }
+                break;
+            case R.id.tv_pop_guohu:
+                if(window3!=null&&window3.isShowing()) {
+                    if (tv_paizhao3 != null) {
+                        Tv_guohu.setText(tv_paizhao3.getText().toString());
+                        guohuID = "0";
+                        Log.e("TAG", "为什走这里么？");
+                        window3.dismiss();
+                    }
+                }
+
+                break;
+            case R.id.tv_pop_weiguohu:
+                Tv_guohu.setText(tv_xiangce3.getText().toString());
+                guohuID="1";//未过户
+                window3.dismiss();
                 break;
         }
     }
@@ -442,10 +476,11 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //        Toast.makeText(this,"保存",Toast.LENGTH_SHORT).show();
 //        finish();
         MyDBUtils myDBUtils=new MyDBUtils(this);
+        Log.e("TAG","过户=="+Tv_guohu.getText().toString()+"==guohuID=="+guohuID);
         String[] str=new String[]{"1",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
                 "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
-                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
+                Tv_guohu.getText().toString(),guohuID,edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
                 "img4","img5","img6","img7","img8","img9"
         };
 
@@ -641,12 +676,12 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     ImageView selectImag=null;
     private void getPicView(ImageView imageView){
         selectImag=imageView;
-        popView= View.inflate(this,R.layout.popwiew2,null);
-        LinearLayout pop_linear=popView.findViewById(R.id.pop_linear);
-        tv_paizhao=popView.findViewById(R.id.tv_paizhao2);
-        tv_xiangce=popView.findViewById(R.id.tv_xiangce2);
-        tv_canle=popView.findViewById(R.id.tv_canle2);
-        window=new PopupWindow(this);
+        popView2= View.inflate(this,R.layout.popwiew2,null);
+        LinearLayout pop_linear=popView2.findViewById(R.id.pop_linear);
+        tv_paizhao2=popView2.findViewById(R.id.tv_paizhao2);
+        tv_xiangce2=popView2.findViewById(R.id.tv_xiangce2);
+        tv_canle2=popView2.findViewById(R.id.tv_canle2);
+        window2=new PopupWindow(this);
         int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
         int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
         pop_linear.measure(w, h);
@@ -655,19 +690,19 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         Log.e("TAG","测量h="+pop_height);
         int width=getWindowManager().getDefaultDisplay().getWidth();
         int height=getWindowManager().getDefaultDisplay().getHeight();
-        window.setWidth(width);
-        window.setHeight(pop_height);
+        window2.setWidth(width);
+        window2.setHeight(pop_height);
         // 设置PopupWindow的背景
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window2.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         // 设置PopupWindow是否能响应外部点击事件
-        window.setOutsideTouchable(true);
+        window2.setOutsideTouchable(true);
         // 设置PopupWindow是否能响应点击事件
-        window.setTouchable(true);
+        window2.setTouchable(true);
         // 显示PopupWindow，其中：
         // 第一个参数是PopupWindow的锚点，第二和第三个参数分别是PopupWindow相对锚点的x、y偏移
-        window.setContentView(popView);
-        window.setAnimationStyle(R.style.animTranslate);
-        window.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        window2.setContentView(popView2);
+        window2.setAnimationStyle(R.style.animTranslate);
+        window2.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 WindowManager.LayoutParams lp=getWindow().getAttributes();
@@ -676,7 +711,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 getWindow().setAttributes(lp);
             }
         });
-        window.showAtLocation(tv_topcenter, Gravity.BOTTOM,0,0);
+        window2.showAtLocation(tv_topcenter, Gravity.BOTTOM,0,0);
         WindowManager.LayoutParams lp=getWindow().getAttributes();
         lp.alpha=0.3f;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -685,10 +720,10 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         // 第一个参数是PopupWindow的父View，第二个参数是PopupWindow相对父View的位置，
         // 第三和第四个参数分别是PopupWindow相对父View的x、y偏移
         // window.showAtLocation(parent, gravity, x, y);
-        tv_xiangce.setOnClickListener(this);
-        tv_paizhao.setOnClickListener(this);
-        tv_canle.setOnClickListener(this);
-        Log.e("TAG","window=="+window.getWidth()+"height=="+window.getHeight());
+        tv_xiangce2.setOnClickListener(this);
+        tv_paizhao2.setOnClickListener(this);
+        tv_canle2.setOnClickListener(this);
+        Log.e("TAG","window=="+window2.getWidth()+"height=="+window2.getHeight());
     }
     //调取本地图库
     public void takePicture(){
@@ -1040,5 +1075,58 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         }
         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(openCameraIntent, PHOTOTAKE);
+    }
+    private void getGuohu(){
+        popView3= View.inflate(this,R.layout.myguohu_popview,null);
+        LinearLayout pop_linear=popView3.findViewById(R.id.pop_linear3);
+        tv_paizhao3=popView3.findViewById(R.id.tv_pop_guohu);
+        tv_xiangce3=popView3.findViewById(R.id.tv_pop_weiguohu);
+        tv_canle3=popView3.findViewById(R.id.tv_canle3);
+        window3=new PopupWindow(this);
+        int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+        pop_linear.measure(w, h);
+        int pop_height = pop_linear.getMeasuredHeight();
+        int pop_width = pop_linear.getMeasuredWidth();
+        int width=getWindowManager().getDefaultDisplay().getWidth();
+        int height=getWindowManager().getDefaultDisplay().getHeight();
+        Log.e("TAG","测量333333333h="+pop_height+"=="+width+"=="+(window3==null));
+
+        window3.setWidth(width);
+        window3.setHeight(pop_height);
+        // 设置PopupWindow的背景
+        window3.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // 设置PopupWindow是否能响应外部点击事件
+        window3.setOutsideTouchable(true);
+        // 设置PopupWindow是否能响应点击事件
+        window3.setTouchable(true);
+        // 显示PopupWindow，其中：
+        // 第一个参数是PopupWindow的锚点，第二和第三个参数分别是PopupWindow相对锚点的x、y偏移
+        window3.setContentView(popView3);
+        window3.setAnimationStyle(R.style.animTranslate);
+        window3.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                WindowManager.LayoutParams lp=getWindow().getAttributes();
+                lp.alpha=1.0f;
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                getWindow().setAttributes(lp);
+            }
+        });
+        window3.showAtLocation(Tv_guohu, Gravity.BOTTOM,0,0);
+//        window3.showAsDropDown(Tv_guohu);
+//        window3.showAsDropDown(Tv_guohu,0,0,Gravity.NO_GRAVITY);
+        WindowManager.LayoutParams lp=getWindow().getAttributes();
+        lp.alpha=0.3f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
+        // 或者也可以调用此方法显示PopupWindow，其中：
+        // 第一个参数是PopupWindow的父View，第二个参数是PopupWindow相对父View的位置，
+        // 第三和第四个参数分别是PopupWindow相对父View的x、y偏移
+        // window.showAtLocation(parent, gravity, x, y);
+        tv_xiangce3.setOnClickListener(this);
+        tv_paizhao3.setOnClickListener(this);
+//        tv_canle3.setOnClickListener(this);
+        Log.e("TAG","window33333333=="+window3.getWidth()+"height=="+window3.getHeight());
     }
 }
