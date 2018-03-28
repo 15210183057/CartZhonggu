@@ -32,7 +32,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MySerchActvity" />
-        <activity android:name=".FrameActivity" />
+        <activity android:name=".FrameActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
         <activity android:name=".SettingActivity" />
         <activity
             android:name="mycamare.TakePhoteActivity"

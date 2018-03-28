@@ -48,6 +48,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,6 +63,7 @@ import application.MyApplication;
 import base.BaseActivity;
 import bean.BeanFlag;
 import bean.Bran;
+import bean.JaShiZhengBean;
 import bean.ModelNameandID;
 import bean.MyNewUpdate;
 import bean.ZHFBean;
@@ -67,6 +72,7 @@ import bean.ZQFBean;
 import camera.CameraActivity;
 import camera.FileUtil;
 import fragment.newFragment;
+import jiekou.getInterface;
 import utils.ImgRote;
 import utils.MyDBUtils;
 import utils.MyDateDB;
@@ -76,8 +82,10 @@ import utils.Mydialog;
 import utils.NameAndTelDialog;
 import utils.SharedUtils;
 import utils.getPicTku;
+import View.GetJsonUtils;
 
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
+import static java.security.AccessController.getContext;
 
 public class BuMessageActivity extends BaseActivity implements View.OnClickListener{
     private ImageView img_paizhao;
@@ -93,14 +101,15 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     private TextView tv_time;//注册日期
     private EditText edt_licheng,edt_price,tv_tel;
     EditText edt_name;//里程，价格,联系电话
-    private ImageView img_newfragment,img2_newfragment,img3_newfragment;
+    private ImageView img_newfragment,img2_newfragment,img3_newfragment,
+    img4_newfragment,img5_newfragment,img6_newfragment,img7_newfragment,img8_newfragment,img9_newfragment;
     private Button btn_commit;
     private LinearLayout linear3_newfragment,linear_nameandtel;
     private TextView tv_quyue,tv_cartFenlei;//tv_cartFenlei 车辆分类
     private TextView tv_cartmodel;
     List imgListPath=new ArrayList();
     Mydialog mydialog;
-    String zqfPath,zqPath,zhfPath;
+    String zqfPath,zqPath,zhfPath,img4Path,img5Path,img6Path,img7Path,img8Path,img9Path;
     String quyuID,brandid,modelid,seriesid,cartName,fenleiID;//商家信息ID,品牌ID，车系ID,车型,分类
     MySuccess mySuccess,mySuccess1;
     private TextView tv_getprice,tv_getmodel;
@@ -116,6 +125,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private TextView Tv_guohu;
     private String guohuID;
+    private String CartID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,10 +134,20 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         setPermissions();
         MyRegistReciver();
         initView();
+        CartID= getIntent().getStringExtra("cartID");
+        Log.e("TAG","接收到的itemid=="+CartID);
+        getItemCartDate();
+        String str=getIntent().getStringExtra("Flag");
+        if(!TextUtils.isEmpty(str)&&str.equals("true")){
+            BeanFlag.Flag=true;
+        }else{
+            BeanFlag.Flag=false;
+        }
         posion=getIntent().getStringExtra("i");
         if(!utils.readXML(MyApplication.cartlistmsg,"count",this).isEmpty()) {
             count = Integer.parseInt(utils.readXML(MyApplication.cartlistmsg, "count", this));
         }
+        mydialog1=new Mydialog(this,"正在获取请稍后");
     }
 
     private void initView() {
@@ -161,6 +181,12 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         img_newfragment=findViewById(R.id.img_newfragment);//左前45°
         img2_newfragment=findViewById(R.id.img2_newfragment);//正前
         img3_newfragment=findViewById(R.id.img3_newfragment);//正后
+        img4_newfragment=findViewById(R.id.img4_newfragment);
+        img5_newfragment=findViewById(R.id.img5_newfragment);
+        img6_newfragment=findViewById(R.id.img6_newfragment);
+        img7_newfragment=findViewById(R.id.img7_newfragment);
+        img8_newfragment=findViewById(R.id.img8_newfragment);
+        img9_newfragment=findViewById(R.id.img9_newfragment);
 
         img_paizhao=findViewById(R.id.img_paizhao);//vin拍照
         edit_num=findViewById(R.id.edt_vinnum);//vin码显示
@@ -182,6 +208,13 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         img_newfragment.setOnClickListener(this);
         img2_newfragment.setOnClickListener(this);
         img3_newfragment.setOnClickListener(this);
+        img4_newfragment.setOnClickListener(this);
+        img5_newfragment.setOnClickListener(this);
+        img6_newfragment.setOnClickListener(this);
+        img7_newfragment.setOnClickListener(this);
+        img8_newfragment.setOnClickListener(this);
+        img9_newfragment.setOnClickListener(this);
+
         tv_cartmodel.setOnClickListener(this);
         tv_quyue.setOnClickListener(this);
         tv_cartFenlei.setOnClickListener(this);
@@ -237,7 +270,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 if (!TextUtils.isEmpty(edit_num.getText().toString())
                         && !TextUtils.isEmpty(tv_time.getText().toString())
                         && !tv_time.getText().toString().equals("请选择日期")) {
-//                    getPrice("model");
+                    getPrice("model");
                 } else {
                     Toast.makeText(this, "vin码或注册日期不能为空", Toast.LENGTH_LONG).show();
                 }
@@ -294,7 +327,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //                updateImag(zqfPath);
 //                updateImag(zqPath);
 //                updateImag(zhfPath);
-                Log.e("TAG","点击提交");
+                Log.e("TAG","点击提交=="+BeanFlag.Flag);
 //                getSubStr(edt_price);
 //                getSubStr(edt_licheng);
                 if (TextUtils.isEmpty(tv_quyue.getText().toString())||tv_quyue.getText().toString().trim().equals("请选择车商信息")){
@@ -368,6 +401,18 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                         }
                         else if (TextUtils.isEmpty(zhfPath)){
                             Toast.makeText(this,"正后图片不能为空",Toast.LENGTH_LONG).show();
+                        } else if (TextUtils.isEmpty(img4Path)){
+                            Toast.makeText(this,"img4Path正后图片不能为空",Toast.LENGTH_LONG).show();
+                        } else if (TextUtils.isEmpty(img5Path)){
+                            Toast.makeText(this,"img5Path正后图片不能为空",Toast.LENGTH_LONG).show();
+                        } else if (TextUtils.isEmpty(img6Path)){
+                            Toast.makeText(this,"img6Path正后图片不能为空",Toast.LENGTH_LONG).show();
+                        } else if (TextUtils.isEmpty(img7Path)){
+                            Toast.makeText(this,"img7Path正后图片不能为空",Toast.LENGTH_LONG).show();
+                        } else if (TextUtils.isEmpty(img9Path)){
+                            Toast.makeText(this,"img8Path正后图片不能为空",Toast.LENGTH_LONG).show();
+                        } else if (TextUtils.isEmpty(img9Path)){
+                            Toast.makeText(this,"img9Path正后图片不能为空",Toast.LENGTH_LONG).show();
                         }else {
 //                            mydialog.show();
                             initGetDate();
@@ -413,6 +458,36 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 img3_newfragment.setBackgroundResource(0);
 
                 break;
+            case R.id.img4_newfragment:
+                getPicView(img4_newfragment);
+                picName="img4";
+                img4_newfragment.setBackgroundResource(0);
+                break;
+            case R.id.img5_newfragment:
+                getPicView(img5_newfragment);
+                picName="img5";
+                img5_newfragment.setBackgroundResource(0);
+                break;
+            case R.id.img6_newfragment:
+                getPicView(img6_newfragment);
+                picName="img6";
+                img6_newfragment.setBackgroundResource(0);
+                break;
+            case R.id.img7_newfragment:
+                getPicView(img7_newfragment);
+                picName="img7";
+                img7_newfragment.setBackgroundResource(0);
+                break;
+            case R.id.img8_newfragment:
+                getPicView(img8_newfragment);
+                picName="img8";
+                img8_newfragment.setBackgroundResource(0);
+                break;
+            case R.id.img9_newfragment:
+                getPicView(img9_newfragment);
+                picName="img9";
+                img9_newfragment.setBackgroundResource(0);
+                break;
             case R.id.tv_cartmodel:
                 Intent intent6=new Intent(this, CartModelActivity.class);
                 startActivity(intent6);
@@ -437,7 +512,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 window2.dismiss();
                 break;
             case R.id.tv_canle2:
-                if(window!=null&&window.isShowing()){
+                if(window2!=null&&window2.isShowing()){
                     window2.dismiss();
                 }
                 break;
@@ -458,6 +533,64 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 window3.dismiss();
                 break;
         }
+    }
+
+    // 获取价格
+    private void getPrice(final String string) {
+        mydialog1.show();
+        final RequestParams requestParams=new RequestParams(getInterface.getPrice);
+        requestParams.addBodyParameter("vin",edit_num.getText().toString());
+        if(string.equals("model")&&!tv_time.equals("请选择日期")){
+            requestParams.addBodyParameter("regdate",tv_time.getText().toString());
+        }
+        requestParams.setMaxRetryCount(5);
+        Log.e("TAG","获取价格params="+requestParams);
+        x.http().post(requestParams, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.e("TAg", "获取价格为：" + result);
+//                {"status":0,"vin":"12345678901472589","msg":"获取VIN信息失败"}
+                mydialog1.dismiss();
+                List<JaShiZhengBean>list=new ArrayList<JaShiZhengBean>();
+                list= GetJsonUtils.getCartMsg(BuMessageActivity.this,result);
+                if(!TextUtils.isEmpty(string)&&string.equals("model")){
+                    edt_price.setText(list.get(0).price.toString());
+                    edt_licheng.setText(list.get(0).licheng.toString());
+                    getSubStr(edt_price);
+                    getSubStr(edt_licheng);
+//                    tv_time.setText(list.get(0).data.toString());
+                    seriesid=list.get(0).series_id;
+                    brandid=list.get(0).brand_id;
+                    Log.e("TAG","seriesid=="+seriesid+"=="+list.get(0).series_id);
+                    MyModelDialog myModelDialog=new MyModelDialog(BuMessageActivity.this,ModelNameandID.list);
+                    myModelDialog.show();
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Log.e("TAG","getPrice=="+ex.getMessage().toString());
+                if(mydialog1.isShowing()){
+                    if(!TextUtils.isEmpty(ex.getMessage().toString())){
+                        mydialog1.dismiss();
+                        Toast.makeText(BuMessageActivity.this,"获取失败",Toast.LENGTH_LONG).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+                if(mydialog.isShowing()){
+                    mydialog.dismiss();
+                }
+            }
+        });
     }
 
     private void initGetDate() {
@@ -481,26 +614,26 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
                 "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
                 Tv_guohu.getText().toString(),guohuID,edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                "img4","img5","img6","img7","img8","img9"
+                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
         };
 
         String[] str2=new String[]{"2",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
                 "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
                 "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                "img4","img5","img6","img7","img8","img9"
+                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
         };
         String[] str3=new String[]{"3",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
                 "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
                 "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                "img4","img5","img6","img7","img8","img9"
+                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
         };
         String[] str4=new String[]{"4",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
                 "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
                 "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                "img4","img5","img6","img7","img8","img9"
+                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
         };
         List<Bran>branlist=myDBUtils.chaXun();
         if(branlist.size()>0) {
@@ -782,14 +915,27 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                 }else if(selectImag==img_newfragment){
                     zqfPath=photoPath;
                     Log.e("TAG","图库里的path=="+zqfPath);
+                }else if(selectImag==img4_newfragment){
+                    img4Path=photoPath;
+                }else if(selectImag==img5_newfragment){
+                    img5Path=photoPath;
+                }
+                else if(selectImag==img6_newfragment){
+                    img6Path=photoPath;
+                }else if(selectImag==img7_newfragment){
+                    img7Path=photoPath;
+                }else if(selectImag==img8_newfragment){
+                    img8Path=photoPath;
+                }else if(selectImag==img9_newfragment){
+                    img9Path=photoPath;
                 }
             }
         }else if(requestCode==PHOTOTAKE){
 //            Bundle bundle = data.getExtras();
 //            Bitmap bit= (Bitmap) bundle.get("data");
             Bitmap  bit=BitmapFactory.decodeFile(imgtakePath);
-            Log.e("TAG", "bit压缩前==" + bit.getWidth() + "/" + bit.getHeight());
             if(bit!=null) {
+                Log.e("TAG", "bit压缩前==" + bit.getWidth() + "/" + bit.getHeight());
                 bit = ImgRote.getyasuo(imgtakePath);
                 bit = ImgRote.rotateBitmapByDegree(bit, ImgRote.getBitmapDegree(imgtakePath));
                 Log.e("TAG", "bit压缩后==" + bit.getWidth() + "/" + bit.getHeight());
@@ -807,7 +953,24 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                     img3_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
                     zhfPath = FileUtil.getJpegName();
                     Log.e("TAG", "length==" + new File(zhfPath).length() / 1024);
-
+                }else if(picName.equals("img4")){
+                    img4_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    img4Path=FileUtil.getJpegName();
+                }else if(picName.equals("img5")){
+                    img5_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    img5Path=FileUtil.getJpegName();
+                }else if(picName.equals("img6")){
+                    img6_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    img6Path=FileUtil.getJpegName();
+                }else if(picName.equals("img7")){
+                    img7_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    img7Path=FileUtil.getJpegName();
+                }else if(picName.equals("img8")){
+                    img8_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    img8Path=FileUtil.getJpegName();
+                }else if(picName.equals("img9")){
+                    img9_newfragment.setImageBitmap(new FileUtil(this).readBitmap(FileUtil.getJpegName()));
+                    img9Path=FileUtil.getJpegName();
                 }
             }
         }
@@ -1128,5 +1291,34 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         tv_paizhao3.setOnClickListener(this);
 //        tv_canle3.setOnClickListener(this);
         Log.e("TAG","window33333333=="+window3.getWidth()+"height=="+window3.getHeight());
+    }
+    private void getItemCartDate(){
+//        http://mkerp.zgcw.cn/api/api_car/getInfo?id=1695&json=1&makeup=0
+        RequestParams params=new RequestParams(getInterface.CartItem);
+        params.addBodyParameter("id",CartID);
+        params.addBodyParameter("json","1");
+        params.addBodyParameter("makeup","0");
+        Log.e("TAG","params详情地址为=="+params);
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.e("TAG","详情为==："+result);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.MyLvAdapter;
+import adapter.MyLvAdapter3;
 import bean.BUCartListBeanNUm;
 import bean.BuCartListBean;
 import bean.CarBean;
 import bean.UserBean;
 import jiekou.getInterface;
 import View.GetJsonUtils;
+import utils.Mydialog;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -54,6 +57,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
     private int count;
     private int i=1;//默认加载第一页数据
     private int REQUEST_CODE_SCAN = 111;
+    Mydialog mydialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +69,9 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         list=new ArrayList<BuCartListBean>();
-
-//        getBuCartList(i);
+        mydialog=new Mydialog(getContext(),"正在加载请稍后.....");
+        mydialog.show();
+        getBuCartList(i);
 
         view=inflater.inflate(R.layout.fragment_fragment1, container, false);
          img_topleft=view.findViewById(R.id.img_left);
@@ -83,23 +88,23 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
     }
 
     private void initView() {
-        setDate();
+//        setDate();
         refreshLayout = (RefreshLayout)view.findViewById(R.id.refreshLayout);
 
         lv=view.findViewById(R.id.lv);
         lv.setOnItemClickListener(this);
-
 //        refreshLayout.setEnableAutoLoadmore(true);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 refreshlayout.finishRefresh(2000);
-                Log.e("TAG","上拉刷新");
+                Log.e("TAG","下拉刷新");
                 refreshlayout.getLayout().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if(i>1){
                             i--;
+                            list.clear();
                             getBuCartList(i);
                         }
                     }
@@ -115,23 +120,10 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
                 refreshlayout.getLayout().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        BuCartListBean carBean=new BuCartListBean();
-                        for(int i=count;i<=count+20;i++){
-                            carBean.cardType="大众---"+i;
-                            carBean.name="中古测试---"+i;
-                            carBean.vin="12321sdfsfdsfsfs---"+i;
-                            carBean.licensePlate="进123rew---"+i;
-                            list.add(carBean);
-                        }
-//                        count=list.size();
-//                        if(i<Integer.parseInt(BUCartListBeanNUm.last_page)) {
-//                            i++;
-//                            getBuCartList(i);
-//                        }else{
-//                            Toast.makeText(getContext(),"数据加载完毕",Toast.LENGTH_SHORT).show();
-//                        }
+                        i++;
+                        getBuCartList(i);
                     }
-                },3000);
+                },0);
 
                 refreshlayout.finishLoadmore(2000);
             }
@@ -172,7 +164,8 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
 //        intent.putExtra("i",""+i);
 //        startActivity(intent);
         Intent intent=new Intent(getContext(), BuMessageActivity.class);
-                intent.putExtra("i",""+i);
+                intent.putExtra("cartID",""+list.get(i).cartID);
+                Log.e("TAG","cartID=="+list.get(i).cartID);
         startActivity(intent);
 
     }
@@ -247,33 +240,35 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
     private void getBuCartList(int current_page){
         RequestParams requestParams=new RequestParams(getInterface.getBuCartList);
 //        json=1&pagesize=10&where=blu=1 and groupid in(5,3,2) and status = 1
-        requestParams.addBodyParameter("json","1");
-        requestParams.addBodyParameter("pagesize","10");
-        requestParams.addBodyParameter("current_page",current_page+"");
-        requestParams.addBodyParameter("where","blu=0 and groupid in("+ UserBean.groupids+") and status=1");
+//        mkerp.zgcw.cn/api/api_car/getMylist?userid=16&page=1&merchantid=72&makeup=0
+        requestParams.addBodyParameter("userid",UserBean.id);
+        requestParams.addBodyParameter("page",current_page+"");
+//        requestParams.addBodyParameter("merchantid","商户id");
+        requestParams.addBodyParameter("makeup","0");
+//        requestParams.addBodyParameter("where","blu=0 and groupid in("+ UserBean.groupids+") and status=1");
        Log.e("TAG","requestParams接口拼接地址为=="+requestParams+"");
         x.http().post(requestParams, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                Log.e("TAG","resulr=="+result);
-
+                mydialog.dismiss();
                 List<BuCartListBean>listBeans=new ArrayList<BuCartListBean>();
-                listBeans= GetJsonUtils.getBuCartList(getActivity(),result);
+                listBeans.clear();
+                listBeans= GetJsonUtils.getCartList(getActivity(),result);
+//                listBeans= GetJsonUtils.getBuCartList(getActivity(),result);
                 list.addAll(listBeans);
-                if (list!=null) {
-                    adapter = new MyLvAdapter(list, getActivity());
-                    lv.setAdapter(adapter);
+                if (list.size()==0){
+                    Toast.makeText(getContext(),"没有符合该车商的车辆信息",Toast.LENGTH_SHORT).show();
+                }else{
+
                 }
-//                List<CarBean>list=new ArrayList<CarBean>();
-//                list=GetJsonUtils.getBuCartList(getActivity(),"");
-//                for(int i=0;i<list.size();i++){
-//                    Log.e("TAG","list数据name=="+list.get(i).tv_name);
-//                }
+
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-
+                if(!TextUtils.isEmpty(ex.getMessage().toString())){
+                    mydialog.dismiss();
+                }
             }
 
             @Override
@@ -283,8 +278,12 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
 
             @Override
             public void onFinished() {
-                tv_topcenter.setText(BUCartListBeanNUm.total);//设置title
+                mydialog.dismiss();
+                tv_topcenter.setText(list.size()+"");//设置title
                 Log.e("TAG","title=="+BUCartListBeanNUm.total);
+                if(list!=null) {
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -295,7 +294,6 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
         // 扫描二维码/条码回传
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
-
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 Toast.makeText(getActivity(),"扫描结果为："+content,Toast.LENGTH_SHORT).show();
                 Intent intent =new Intent(getActivity(),WebViewActivity.class);

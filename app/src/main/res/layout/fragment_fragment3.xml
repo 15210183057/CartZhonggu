@@ -11,13 +11,16 @@
         android:layout_height="50dp"
         android:background="@color/titleBar"
         >
-        <ImageView
+        <TextView
+
             android:id="@+id/img_left"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:textColor="#fff"
+            android:textSize="16sp"
             android:layout_marginLeft="10dp"
-            android:src="@mipmap/qx"
             android:scaleType="fitXY"/>
         <TextView
             android:id="@+id/tv_center"
@@ -44,30 +47,69 @@
             android:text="查看全部"
             android:textSize="16sp"
             android:textColor="#fff"
-           />
+            />
     </RelativeLayout>
-    <TextView
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:id="@+id/tv_quyue"
-        android:text="按车商信息搜索"
+    <LinearLayout
+        android:id="@+id/linear_search"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/juxingnull"
-       />
-    <Button
-        android:id="@+id/btn_serach"
-        android:layout_width="100dp"
-        android:layout_gravity="right"
-        android:layout_height="30dp"
-        android:textColor="#fff"
-        android:background="@drawable/denglu_bg"
-        android:visibility="gone"
-        android:layout_marginRight="10dp"
-        android:text="点击搜索"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F5F5F5">
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/tv_quyue"
+            android:text="按车商信息搜索"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/juxingnull"
+            />
+        <EditText
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/edt_vin_search"
+            android:hint="输入VIN码查询"
+            android:textSize="14sp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/juxingnull"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:visibility="gone"
+                android:id="@+id/btn_clean"
+                android:layout_width="100dp"
+                android:layout_gravity="right"
+                android:layout_height="40dp"
+                android:textColor="#fff"
+                android:background="@drawable/denglu_bg"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_toLeftOf="@id/btn_serach"
+                android:text="点击清空"/>
+            <Button
+                android:layout_alignParentRight="true"
+                android:id="@+id/btn_serach"
+                android:layout_width="100dp"
+                android:layout_gravity="right"
+                android:layout_height="30dp"
+                android:textColor="#fff"
+                android:background="@drawable/denglu_bg"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="点击搜索"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"

@@ -21,9 +21,11 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.xutils.common.Callback;
 import org.xutils.common.util.KeyValue;
 import org.xutils.http.RequestParams;
 import org.xutils.http.body.MultipartBody;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -252,14 +254,16 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                     Log.e("TAG", "OK==listSizeBean==h==" + h + "====" + listBeans.size());
                     if (listBeans.get(h).Flag) {
                         Log.e("TAG", "i%2==" + (h % 2));
+                        count++;
                         if (h % 2 == 0) {
-                            count++;
                             utils.setDelete(listBeans.get(h).itemid);
                             Log.e("TAG", "上传成功==" + h);
                             Toast.makeText(getContext(), "上传成功", Toast.LENGTH_SHORT).show();
+                            img_topleft.setText("全选");
                         } else {
                             Log.e("TAG", "上传失败==" + h);
                             list.add(h);
+                            img_topleft.setText("取消");
                             Toast.makeText(getContext(), "上传失败", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -280,20 +284,57 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         }
     }
     private void upDate(){
-        RequestParams requestParams=new RequestParams();
-        List<KeyValue>list=new ArrayList<>();
-        for(int i=0;i<5;i++){
-            list.add(new KeyValue("canshu","item="+i));
-        }
-//        requestParams.addBodyParameter("",list.toString());
-        requestParams.setAutoResume(true);
+//        RequestParams requestParams=new RequestParams();
+//        List<KeyValue>list=new ArrayList<>();
+//        for(int i=0;i<5;i++){
+//            list.add(new KeyValue("canshu","item="+i));
+//        }
+////        requestParams.addBodyParameter("",list.toString());
+//        requestParams.setAutoResume(true);
+//
+//        MultipartBody body=new MultipartBody(list,"UTF-8");
+//        requestParams.setRequestBody(body);
+//        requestParams.setMultipart(true);
+//        Log.e("TAG","上传惨淡--"+requestParams.getBodyParams());
+////        MultipartBody multipartBody=new MultipartBody(new ArrayList<KeyValue>(),"utf-8");
+////        requestParams.setRequestBody(multipartBody);
+////        requestParams.addParameter("",new ArrayList<String>());
+        RequestParams params=new RequestParams("https://www.baidu.com");
+        x.http().post(params, new Callback.ProgressCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.e("TAG","onSuccess=="+result);
+            }
 
-        MultipartBody body=new MultipartBody(list,"UTF-8");
-        requestParams.setRequestBody(body);
-        requestParams.setMultipart(true);
-        Log.e("TAG","上传惨淡--"+requestParams.getBodyParams());
-//        MultipartBody multipartBody=new MultipartBody(new ArrayList<KeyValue>(),"utf-8");
-//        requestParams.setRequestBody(multipartBody);
-//        requestParams.addParameter("",new ArrayList<String>());
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Log.e("TAG","onError=="+ex.getMessage().toString());
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Log.e("TAG","onCancelled==");
+            }
+
+            @Override
+            public void onFinished() {
+                Log.e("TAG","onFinished==");
+            }
+
+            @Override
+            public void onWaiting() {
+                Log.e("TAG","onWaiting==");
+            }
+
+            @Override
+            public void onStarted() {
+                Log.e("TAG","onStarted==");
+            }
+
+            @Override
+            public void onLoading(long total, long current, boolean isDownloading) {
+                Log.e("TAG","onLoading==");
+            }
+        });
     }
 }

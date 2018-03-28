@@ -10,5 +10,6 @@ public class BuCartListBean {
     public String quyuID,quyuName,modelID,seriseID,brandid,modelName,seriseName,brandName;
     public boolean Flag;
     public String img1,img2,img3;
-    public String ListID,NameTelID;
+    public String ListID,NameTelID,transterstatus;
+    public String cartID;
 }

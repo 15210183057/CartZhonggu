@@ -12,14 +12,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import View.GetJsonUtils;
 
+import com.example.a123456.cartzhonggu.BuMessageActivity;
 import com.example.a123456.cartzhonggu.MySerchActvity;
 import com.example.a123456.cartzhonggu.R;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -36,6 +40,7 @@ import java.util.List;
 import adapter.MyLvAdapter3;
 import bean.BUCartListBeanNUm;
 import bean.BuCartListBean;
+import bean.NameAndTel;
 import bean.UserBean;
 import jiekou.getInterface;
 import utils.Mydialog;
@@ -46,7 +51,7 @@ import utils.Mydialog;
 public class Fragment3 extends Fragment implements AdapterView.OnItemClickListener,View.OnClickListener{
 
     private View view;
-    private ImageView img_topleft;
+    private TextView img_topleft;
     private TextView tv_topcenter,img_topright;
 
     RefreshLayout refreshLayout;
@@ -58,8 +63,11 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
     Mydialog mydialog;
     TextView tv_quyu;
     String quyu_ID;
-    Button btn_serach;
+    Button btn_serach,btn_clean;
     boolean canlel=false;
+    private EditText edt_vin_search;
+    List<List<NameAndTel>> NameAndTellist1=new ArrayList<List<NameAndTel>>();
+    private LinearLayout linear_search;
     public Fragment3() {
         // Required empty public constructor
     }
@@ -70,6 +78,7 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment'
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mydialog=new Mydialog(getContext(),"正在加载请稍后.....");
         mydialog.show();
         my=new MyBroadcastReceiver();
@@ -79,24 +88,30 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
         intentFilter.addAction("f3");
         getActivity().registerReceiver(my,intentFilter);
         list=new ArrayList<BuCartListBean>();
-        Log.e("TAG","地址=="+list);
-        getBuCartList(i);
+
         view=inflater.inflate(R.layout.fragment_fragment3, container, false);
         img_topleft=view.findViewById(R.id.img_left);
         img_topright=view.findViewById(R.id.img_right);
         tv_topcenter=view.findViewById(R.id.tv_center);
 
+        edt_vin_search=view.findViewById(R.id.edt_vin_search);
         tv_quyu=view.findViewById(R.id.tv_quyue);
         btn_serach=view.findViewById(R.id.btn_serach);
+        btn_clean=view.findViewById(R.id.btn_clean);
         img_topleft.setVisibility(View.GONE);
+        img_topleft.setText("搜索");
         tv_topcenter.setText("已上传车源");
 //        img_topright.setVisibility(View.GONE);
+        getBuCartList(i);
+
         initView();
 
         Log.e("TAG","标题；"+tv_topcenter.getText().toString());
         tv_quyu.setOnClickListener(this);
         btn_serach.setOnClickListener(this);
+        btn_clean.setOnClickListener(this);
         img_topright.setOnClickListener(this);
+        img_topleft.setOnClickListener(this);
         return view;
 
     }
@@ -109,6 +124,7 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
 
     private void initView() {
         setDate();
+        linear_search=view.findViewById(R.id.linear_search);
         refreshLayout = (RefreshLayout)view.findViewById(R.id.refreshLayout);
         lv=view.findViewById(R.id.lv);
         lv.setOnItemClickListener(this);
@@ -132,7 +148,8 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
 //                        if(i>1){
 //                            i--;
                         list.clear();
-                            getBuCartList(1);
+                        NameAndTellist1.clear();
+                        getBuCartList(1);
 //                        }
                     }
                 },0);
@@ -159,7 +176,6 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
                         i++;
                         getBuCartList(i);
                         Log.e("TAG","list=="+list.size());
-                        Log.e("TAG","地址222=="+list);
 //                        if(!TextUtils.isEmpty(BUCartListBeanNUm.last_page)&&i<Integer.parseInt(BUCartListBeanNUm.last_page)) {
 //                            i++;
 //                            getBuCartList(i);
@@ -188,45 +204,64 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Intent intent=new Intent();
-        intent.setAction("new");
+        int h2=NameAndTellist1.size();
+        Log.e("TAG","=h2="+h2+"i=="+i);
+        int h=NameAndTellist1.get(i).size();
+        Log.e("TAG","h=="+h+"=h2="+h2);
+//
+//        for(int r=0;r<h;r++){
+//            Log.e("TAG","id=="+NameAndTel.NameAndTellist.get(i).get(r).id+":"+NameAndTel.NameAndTellist.get(i).get(r).name);
+//        }
+        Intent intent=new Intent(getContext(),BuMessageActivity.class);
         intent.putExtra("Flag","true");
-        intent.putExtra("vinnum",list.get(i).vin);
-        intent.putExtra("time",list.get(i).regTime);
-        intent.putExtra("quyu",list.get(i).name);
-        intent.putExtra("cartmodel",list.get(i).brandName+list.get(i).seriseName+list.get(i).modelName);
-        intent.putExtra("licheng",list.get(i).mileage);
-        intent.putExtra("price",list.get(i).price);
+        startActivity(intent);
 
-        intent.putExtra("quyuID",list.get(i).quyuID);
-        intent.putExtra("brandID",list.get(i).brandid);
-        intent.putExtra("seriseID",list.get(i).seriseID);
-        Log.e("TAG","fragment=="+list.get(i).modelID);
-        intent.putExtra("modelID",list.get(i).modelID);
-        intent.putExtra("modelName",list.get(i).modelName);
-        intent.putExtra("seriseName",list.get(i).seriseName);
-        intent.putExtra("brandName",list.get(i).brandName);
-        intent.putExtra("img1",list.get(i).img1);
-        intent.putExtra("img2",list.get(i).img2);
-        intent.putExtra("img3",list.get(i).img3);
-        intent.putExtra("ID",list.get(i).ListID);
-
-        intent.putExtra("tel",list.get(i).tel);
-        intent.putExtra("contact_name",list.get(i).contact_name);
-        intent.putExtra("isDaTing",list.get(i).isDaTing);
-        intent.putExtra("NameTelID",list.get(i).NameTelID);
-        intent.putExtra("currentID",i+"");
-        getActivity().sendBroadcast(intent);
+//        Intent intent=new Intent();
+//        intent.setAction("new");
+//        intent.putExtra("Flag","true");
+//        intent.putExtra("vinnum",list.get(i).vin);
+//        intent.putExtra("time",list.get(i).regTime);
+//        intent.putExtra("quyu",list.get(i).name);
+//        intent.putExtra("cartmodel",list.get(i).brandName+list.get(i).seriseName+list.get(i).modelName);
+//        intent.putExtra("licheng",list.get(i).mileage);
+//        intent.putExtra("price",list.get(i).price);
+//        Log.e("TAG","list=="+list.get(i).price);
+//        Log.e("TAG","第几条=="+i);
+//        Log.e("TAG","quyuID=="+list.get(i).quyuID+"=="+"i");
+//        intent.putExtra("quyuID",list.get(i).quyuID);
+//        intent.putExtra("brandID",list.get(i).brandid);
+//        intent.putExtra("seriseID",list.get(i).seriseID);
+//        Log.e("TAG","fragment=="+list.get(i).modelID);
+//        intent.putExtra("modelID",list.get(i).modelID);
+//        intent.putExtra("modelName",list.get(i).modelName);
+//        intent.putExtra("seriseName",list.get(i).seriseName);
+//        intent.putExtra("brandName",list.get(i).brandName);
+//        intent.putExtra("img1",list.get(i).img1);
+//        intent.putExtra("img2",list.get(i).img2);
+//        intent.putExtra("img3",list.get(i).img3);
+//        intent.putExtra("ID",list.get(i).ListID);
+//
+//        intent.putExtra("tel",list.get(i).tel);
+//        intent.putExtra("contact_name",list.get(i).contact_name);
+//        intent.putExtra("isDaTing",list.get(i).isDaTing);
+//        intent.putExtra("NameTelID",list.get(i).NameTelID);
+//        intent.putExtra("currentID",i+"");
+//        intent.putExtra("transterstatus",list.get(i).transterstatus);
+//        getActivity().sendBroadcast(intent);
     }
     //网络请求，获取数据源,
     private void getBuCartList(int current_page){
         Log.e("TAG","page=="+current_page);
-
+//        mkerp.zgcw.cn/api/api_car/getMylist?userid=16&page=1&merchantid=72&makeup=0
         RequestParams requestParams=new RequestParams(getInterface.getList);
         requestParams.addBodyParameter("userid",UserBean.id);
         requestParams.addBodyParameter("page",current_page+"");
+        requestParams.addBodyParameter("makeup","1");
         if(!TextUtils.isEmpty(quyu_ID)) {
             requestParams.addBodyParameter("merchantid", quyu_ID);
+        }
+        if(!TextUtils.isEmpty(edt_vin_search.getText())){
+            requestParams.addBodyParameter("vin",edt_vin_search.getText().toString());
         }
         Log.e("TAG","requestParams接口拼接地址为=="+requestParams+"");
         x.http().post(requestParams, new Callback.CommonCallback<String>() {
@@ -245,6 +280,7 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
                 }else{
 
                 }
+                NameAndTellist1.addAll(NameAndTel.NameAndTellist);
             }
 
             @Override
@@ -300,6 +336,9 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
     @Override
     public void onClick(View view) {
         switch (view.getId()){
+            case R.id.img_left:
+                linear_search.setVisibility(View.VISIBLE);
+                break;
             case R.id.tv_quyue:
                 Intent intentS = new Intent(getContext(), MySerchActvity.class);
                 intentS.putExtra("f3","f3");
@@ -312,9 +351,10 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
                 }
                 Log.e("TAG","开始搜索="+quyu_ID);
                 list.clear();
-
+                NameAndTellist1.clear();
                 getBuCartList(1);
-                 i=1;
+                i=1;
+//                linear_search.setVisibility(View.GONE);
                 break;
             case R.id.img_right:
                 if(!mydialog.isShowing()){
@@ -324,6 +364,18 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
                 tv_quyu.setText("按车商信息搜索");
                 i=1;
                 list.clear();
+                NameAndTellist1.clear();
+                getBuCartList(1);
+                break;
+            case R.id.btn_clean:
+                if(!mydialog.isShowing()){
+                    mydialog.show();
+                }
+                quyu_ID="";
+                tv_quyu.setText("按车商信息搜索");
+                i=1;
+                list.clear();
+                NameAndTellist1.clear();
                 getBuCartList(1);
                 break;
         }
@@ -350,5 +402,4 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
             }
         }
     }
-
 }

@@ -472,6 +472,7 @@ public class GetJsonUtils {
                 BuCartListBean buCartListBean=new BuCartListBean();
                 //里程
                 JSONObject jsonObject1=new JSONObject(carinfo);
+                buCartListBean.cartID=jsonObject1.getString("carid");
                 buCartListBean.mileage=jsonObject1.getString("mileage");
                 buCartListBean.ListID=jsonObject1.getString("carid");
                 buCartListBean.price=jsonObject1.getString("target_price");
@@ -488,6 +489,7 @@ public class GetJsonUtils {
                 buCartListBean.seriseID=jsonObject1.getString("seriesid");
                 buCartListBean.seriseName=jsonObject1.getString("series_name");
                 buCartListBean.isDaTing=jsonObject1.getString("isDaTing");
+                buCartListBean.transterstatus=jsonObject1.getString("transterstatus");
                 buCartListBean.NameTelID=jsonObject1.getString("selluserid");
                 String str=jsonObject1.getString("sellsinfo");
                 if(!str.equals("null")) {

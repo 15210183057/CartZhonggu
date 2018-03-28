@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="天津二手车交易市场"
+        android:text="天津二手车交易市场补录车辆信息"
         android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:textColor="#000"
