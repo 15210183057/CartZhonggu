@@ -606,4 +606,94 @@ public class GetJsonUtils {
         }
         return list;
     }
+
+    public static List CartListItem(Context context,String result){
+        List<BuCartListBean>list=new ArrayList<BuCartListBean>();
+        NameAndTel.NameAndTellist.clear();
+        try {
+            JSONObject jsonObject=new JSONObject(result);
+
+                String carinfo=jsonObject.getString("carinfo");
+                BuCartListBean buCartListBean=new BuCartListBean();
+                //里程
+                JSONObject jsonObject1=new JSONObject(carinfo);
+                buCartListBean.cartID=jsonObject1.getString("carid");
+                buCartListBean.mileage=jsonObject1.getString("mileage");
+                buCartListBean.ListID=jsonObject1.getString("carid");
+                buCartListBean.price=jsonObject1.getString("target_price");
+                buCartListBean.licensePlate=jsonObject1.getString("licensePlate");
+                buCartListBean.time=jsonObject1.getString("creatime");
+                buCartListBean.regTime=jsonObject1.getString("retDate");
+                buCartListBean.time=jsonObject1.getString("creatime");
+                buCartListBean.vin=jsonObject1.getString("vin");
+                buCartListBean.modelID=jsonObject1.getString("modelid");
+                buCartListBean.modelName=jsonObject1.getString("model_name");
+                buCartListBean.brandid=jsonObject1.getString("brandid");
+                buCartListBean.brandName=jsonObject1.getString("brand_name");
+                buCartListBean.cardType=jsonObject1.getString("brand_name");
+                buCartListBean.seriseID=jsonObject1.getString("seriesid");
+                buCartListBean.seriseName=jsonObject1.getString("series_name");
+                buCartListBean.isDaTing=jsonObject1.getString("isdating");
+                buCartListBean.transterstatus=jsonObject1.getString("transterstatus");
+//                buCartListBean.NameTelID=jsonObject1.getString("selluserid");
+                String str=jsonObject1.getString("sellsinfo");
+                if(!str.equals("null")) {
+                    Log.e("TAG", "str==" + str);
+                    JSONObject jsonObject4 = new JSONObject(str);
+                    if(!TextUtils.isEmpty(str)){
+                        buCartListBean.NameTelID=jsonObject4.getString("id");
+                        buCartListBean.contact_name = jsonObject4.getString("name");
+                        buCartListBean.tel = jsonObject4.getString("tel");
+                    }
+//                    if (!buCartListBean.NameTelID.equals("0")) {
+//                        buCartListBean.contact_name = jsonObject4.getString("name");
+//                        buCartListBean.tel = jsonObject4.getString("tel");
+//                    }
+                }
+                Log.e("TAG","mileage==="+buCartListBean.isDaTing);
+
+                String merchant=jsonObject.getString("merchant");
+                JSONObject jsonObject2=new JSONObject(merchant);
+                buCartListBean.quyuID=jsonObject2.getString("merchantid");
+                buCartListBean.quyuName=jsonObject2.getString("bl_name");
+//                buCartListBean.name=jsonObject2.getString("name");//获取用户名
+//                buCartListBean.contact_name=jsonObject2.getString("contact_name");
+                String pic=jsonObject.getString("pic");
+                JSONObject jsonObject3=new JSONObject(pic);
+                buCartListBean.img1=jsonObject3.getString("zhengqian45");
+//                Log.e("TAG","buCartListBean.img1=="+buCartListBean.img1);
+                buCartListBean.img2=jsonObject3.getString("zhengqian");
+//                Log.e("TAG","buCartListBean.img2=="+buCartListBean.img2);
+                buCartListBean.img3=jsonObject3.getString("zhenghou");
+//                Log.e("TAG","buCartListBean.img3=="+buCartListBean.img3);
+            buCartListBean.img4=jsonObject3.getString("picone");
+            buCartListBean.img5=jsonObject3.getString("pictwo");
+            buCartListBean.img6=jsonObject3.getString("picthree");
+            buCartListBean.img7=jsonObject3.getString("picfour");
+            buCartListBean.img8=jsonObject3.getString("picfive");
+            buCartListBean.img9=jsonObject3.getString("picsix");
+//                String merchant_contacter=jsonObject.getString("merchant_contacter");
+//                JSONObject jsonObject4=new JSONObject(merchant_contacter);
+//                JSONArray jsonArray1=jsonObject.getJSONArray("people_info");
+//                Log.e("TAG","jsonArray1=="+jsonArray1.length());
+//                for(int k=0;k<jsonArray1.length();k++){
+//                    JSONObject jsonObject5=jsonArray1.getJSONObject(k);
+//                    List<NameAndTel>list1=new ArrayList<NameAndTel>();
+//                    NameAndTel nameAndTel=new NameAndTel();
+//                    nameAndTel.tel=jsonObject5.getString("tel");
+//                    nameAndTel.name=jsonObject5.getString("name");//获取姓名
+//                    nameAndTel.id=jsonObject5.getString("id");
+//                    list1.add(nameAndTel);
+//                    NameAndTel.NameAndTellist.add(list1);
+//                }
+//                Log.e("TAG","详情页NameAndTel.NameAndTellist=="+NameAndTel.NameAndTellist.size());
+//                for(int t=0;t<NameAndTel.NameAndTellist.size();t++){
+//
+//                }
+                list.add(buCartListBean);
+            } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+        return list;
+    }
 }

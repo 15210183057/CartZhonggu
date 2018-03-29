@@ -48,11 +48,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.common.Callback;
+import org.xutils.ex.HttpException;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,21 +66,22 @@ import java.util.List;
 
 import application.MyApplication;
 import base.BaseActivity;
+import bean.BUCartListBeanNUm;
 import bean.BeanFlag;
 import bean.Bran;
+import bean.BuCartListBean;
 import bean.JaShiZhengBean;
 import bean.ModelNameandID;
 import bean.MyNewUpdate;
+import bean.UserBean;
 import bean.ZHFBean;
 import bean.ZQBean;
 import bean.ZQFBean;
 import camera.CameraActivity;
 import camera.FileUtil;
-import fragment.newFragment;
 import jiekou.getInterface;
 import utils.ImgRote;
 import utils.MyDBUtils;
-import utils.MyDateDB;
 import utils.MyModelDialog;
 import utils.MySuccess;
 import utils.Mydialog;
@@ -84,8 +90,6 @@ import utils.SharedUtils;
 import utils.getPicTku;
 import View.GetJsonUtils;
 
-import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
-import static java.security.AccessController.getContext;
 
 public class BuMessageActivity extends BaseActivity implements View.OnClickListener{
     private ImageView img_paizhao;
@@ -110,7 +114,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     List imgListPath=new ArrayList();
     Mydialog mydialog;
     String zqfPath,zqPath,zhfPath,img4Path,img5Path,img6Path,img7Path,img8Path,img9Path;
-    String quyuID,brandid,modelid,seriesid,cartName,fenleiID;//商家信息ID,品牌ID，车系ID,车型,分类
+    String quyuID,brandid,modelid,seriesid,cartName,fenleiID,brangName,seriseName,modelName;//商家信息ID,品牌ID，车系ID,车型,分类
     MySuccess mySuccess,mySuccess1;
     private TextView tv_getprice,tv_getmodel;
     Mydialog mydialog1;
@@ -126,6 +130,9 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     private TextView Tv_guohu;
     private String guohuID;
     private String CartID;
+    private List<BuCartListBean>list=new ArrayList<BuCartListBean>();
+    private String zqfUrlPath,zfUrlPath,zhfUrlPath,img4UrlPath,img5UrlPath,img6UrlPath,img7UrlPath,img8UrlPath,img9UrlPath;
+    private int imgCount;//记录要修改多少张图片
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +145,9 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         Log.e("TAG","接收到的itemid=="+CartID);
         getItemCartDate();
         String str=getIntent().getStringExtra("Flag");
+        //设置vin不可编辑
+        edit_num.setFocusableInTouchMode(false);
+        edit_num.setFocusable(false);
         if(!TextUtils.isEmpty(str)&&str.equals("true")){
             BeanFlag.Flag=true;
         }else{
@@ -369,9 +379,14 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                         mydialog=new Mydialog(this,"请稍等...");
                         Log.e("TAG","先上传图片===="+zqfPath);
                         Log.e("TAG","先上传图片"+(TextUtils.isEmpty(zqfPath)&&TextUtils.isEmpty(zqPath)&&TextUtils.isEmpty(zhfPath)));
-                        if(TextUtils.isEmpty(zqfPath)&&TextUtils.isEmpty(zqPath)&&TextUtils.isEmpty(zhfPath)){
+                        if(zqfPath.contains("http")
+                                &&zqPath.contains("http")
+                                &&zhfPath.contains("http")
+                                &&TextUtils.isEmpty(img4Path)&&TextUtils.isEmpty(img5Path)&&TextUtils.isEmpty(img6Path)
+                                &&TextUtils.isEmpty(img7Path)&&TextUtils.isEmpty(img8Path)&&TextUtils.isEmpty(img9Path)){
                             //走修改接口
 //                            setCartMsg();
+                            updateCartMsg(CartID);
                             mydialog.show();
                             Log.e("TAG","走修改接口");
                         }else{
@@ -379,16 +394,49 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                             Log.e("TAG","修改图片==zqfPath="+zqfPath);
                             Log.e("TAG","修改图片==zqPath="+zqPath);
                             Log.e("TAG","修改图片==zhfPath="+zhfPath);
-                            if(!TextUtils.isEmpty(zqfPath)){
-//                                updateImag(zqfPath);
+                            Log.e("TAG","修改图片==img4Path="+img4Path);
+                            Log.e("TAG","修改图片==img5Path="+img5Path);
+                            Log.e("TAG","修改图片==img6Path="+img6Path);
+                            Log.e("TAG","修改图片==img7Path="+img7Path);
+                            Log.e("TAG","修改图片==img8Path="+img8Path);
+                            Log.e("TAG","修改图片==img9Path="+img9Path);
+                            Log.e("TAG","修改图片zqf=boolean=="+(!TextUtils.isEmpty(zqPath)&&!zqPath.contains("http")));
+                            if(!TextUtils.isEmpty(zqfPath)&&!zqfPath.contains("http")){
+                                updateImag(zqfPath);
+                                imgCount++;
                             }
-                            if(!TextUtils.isEmpty(zqPath)){
-//                                updateImag(zqPath);
+                            if(!TextUtils.isEmpty(zqPath)&&!zqPath.contains("http")){
+                                updateImag(zqPath);
+                                imgCount++;
                             }
-                            if(!TextUtils.isEmpty(zhfPath)){
-//                                updateImag(zhfPath);
+                            if(!TextUtils.isEmpty(zhfPath)&&!zhfPath.contains("http")){
+                                updateImag(zhfPath);
+                                imgCount++;
                             }
-
+                            if(!TextUtils.isEmpty(img4Path)){
+                                updateImag(img4Path);
+                                imgCount++;
+                            }
+                            if(!TextUtils.isEmpty(img5Path)){
+                                updateImag(img5Path);
+                                imgCount++;
+                            }
+                            if(!TextUtils.isEmpty(img6Path)){
+                                updateImag(img6Path);
+                                imgCount++;
+                            }
+                            if(!TextUtils.isEmpty(img7Path)){
+                                updateImag(img7Path);
+                                imgCount++;
+                            }
+                            if(!TextUtils.isEmpty(img8Path)){
+                                updateImag(img8Path);
+                                imgCount++;
+                            }
+                            if(!TextUtils.isEmpty(img9Path)){
+                                updateImag(img9Path);
+                                imgCount++;
+                            }
 
                         }
                     }else {
@@ -409,13 +457,13 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                             Toast.makeText(this,"img6Path正后图片不能为空",Toast.LENGTH_LONG).show();
                         } else if (TextUtils.isEmpty(img7Path)){
                             Toast.makeText(this,"img7Path正后图片不能为空",Toast.LENGTH_LONG).show();
-                        } else if (TextUtils.isEmpty(img9Path)){
+                        } else if (TextUtils.isEmpty(img8Path)){
                             Toast.makeText(this,"img8Path正后图片不能为空",Toast.LENGTH_LONG).show();
                         } else if (TextUtils.isEmpty(img9Path)){
                             Toast.makeText(this,"img9Path正后图片不能为空",Toast.LENGTH_LONG).show();
                         }else {
 //                            mydialog.show();
-                            initGetDate();
+                            initGetDate(CartID);
 //                            Log.e("TAG", "修改=" + zqfPath);
 //                            updateImag(zqfPath);
 //                            updateImag(zqPath);
@@ -593,7 +641,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
-    private void initGetDate() {
+    private void initGetDate(String cartItemID) {
 //        count++;
 //        Log.e("TAG","count条数=="+count);
 //        utils.saveXML(MyApplication.cartlistmsg,"vin"+posion,edit_num.getText().toString(),this);
@@ -610,50 +658,39 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //        finish();
         MyDBUtils myDBUtils=new MyDBUtils(this);
         Log.e("TAG","过户=="+Tv_guohu.getText().toString()+"==guohuID=="+guohuID);
-        String[] str=new String[]{"1",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
-                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
-                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
-                Tv_guohu.getText().toString(),guohuID,edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
+        Log.e("TAG","tv_time=="+tv_time.getText().toString()
+        +"\n"+cartName);
+        if(!edt_name.getText().toString().equals(list.get(0).contact_name)||!tv_tel.getText().toString().equals(list.get(0).tel)){
+            picID="0";
         };
 
-        String[] str2=new String[]{"2",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+        Log.e("TAG","保存picID=="+picID);
+        Log.e("TAG","保存zqfPath=="+zqfPath);
+        String[] str=new String[]{cartItemID,tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
                 tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
-                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
-                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
+                brangName,brandid,seriseName,seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
+                Tv_guohu.getText().toString(),guohuID,edt_licheng.getText().toString(),edt_price.getText().toString(),zqfPath,zqPath,zhfPath,
+                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path,picID
         };
-        String[] str3=new String[]{"3",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
-                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
-                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
-                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
-        };
-        String[] str4=new String[]{"4",tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
-                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
-                "品牌",brandid,"车系",seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
-                "过户","过户id",edt_licheng.getText().toString(),edt_price.getText().toString(),zhfPath,zqPath,zhfPath,
-                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path
-        };
+
         List<Bran>branlist=myDBUtils.chaXun();
+
         if(branlist.size()>0) {
             for (int i = 0; i < branlist.size(); i++) {
-                if (branlist.get(i).itemid.equals("6")) {
+                Log.e("TAG","数据库中有没有状态数据--"+branlist.get(i).itemid);
+                Log.e("TAG","要添加的ID==="+cartItemID);
+                if (branlist.get(i).itemid.equals(cartItemID)) {
                     myDBUtils.setBulu(str);
+                    break;
                 } else {
                     if (i == branlist.size() - 1) {
                         myDBUtils.addBuLu(str);
-                        myDBUtils.addBuLu(str2);
-                        myDBUtils.addBuLu(str3);
-                        myDBUtils.addBuLu(str4);
                     }
                 }
+
             }
         }else{
             myDBUtils.addBuLu(str);
-            myDBUtils.addBuLu(str2);
-            myDBUtils.addBuLu(str3);
-            myDBUtils.addBuLu(str4);
         }
         finish();
     }
@@ -1303,6 +1340,75 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onSuccess(String result) {
                 Log.e("TAG","详情为==："+result);
+              list=GetJsonUtils.CartListItem(BuMessageActivity.this,result);
+              tv_quyue.setText(list.get(0).quyuName);
+              quyuID=list.get(0).quyuID;
+              edit_num.setText(list.get(0).vin);
+              tv_time.setText(list.get(0).regTime);
+              picID=list.get(0).NameTelID;
+
+              edt_name.setText(list.get(0).contact_name);
+              tv_tel.setText(list.get(0).tel);
+              brandid=list.get(0).brandid;
+              seriesid=list.get(0).seriseID;
+              modelid=list.get(0).modelID;
+              brangName=list.get(0).brandName;
+              seriseName=list.get(0).seriseName;
+              cartName=list.get(0).modelName;
+              tv_cartmodel.setText(list.get(0).modelName);
+              fenleiID=list.get(0).isDaTing;
+                if(fenleiID.equals("1")){
+                    tv_cartFenlei.setText("大厅车辆");
+                }else if(fenleiID.equals("2")){
+                    tv_cartFenlei.setText("市场车辆");
+                }
+                else if(fenleiID.equals("3")){
+                    tv_cartFenlei.setText("商户自用车");
+                }
+                else if(fenleiID.equals("4")){
+                    tv_cartFenlei.setText("新车登记商户卡车辆");
+                }
+                else if(fenleiID.equals("5")){
+                    tv_cartFenlei.setText("职工车辆");
+                }
+                guohuID=list.get(0).transterstatus;
+                if(guohuID.equals("0")){
+                    //已过户
+                    Tv_guohu.setText("已过户");
+                }else{
+                    Tv_guohu.setText("未过户");
+                }
+                edt_licheng.setText(list.get(0).mileage);
+                edt_price.setText(list.get(0).price);
+                zqfPath=list.get(0).img1;
+                zqPath=list.get(0).img2;
+                zhfPath=list.get(0).img3;
+                zqfUrlPath=list.get(0).img1;
+                zfUrlPath=list.get(0).img2;
+                zhfUrlPath=list.get(0).img3;
+                if(list.get(0).img1.contains("http")) {
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img1).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img_newfragment);
+                }
+                if(list.get(0).img2 .contains("http")) {
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img2).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img2_newfragment);
+                }
+                if(list.get(0).img3 .contains("http")){
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img3).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img3_newfragment);
+                } if(BeanFlag.Flag) {
+                    Log.e("TAG","img4=="+list.get(0).img4);
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img4).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img4_newfragment);
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img5).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img5_newfragment);
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img6).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img6_newfragment);
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img7).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img7_newfragment);
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img8).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img8_newfragment);
+                    Glide.with(BuMessageActivity.this).load(list.get(0).img9).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img9_newfragment);
+                    img4UrlPath=list.get(0).img4;
+                    img5UrlPath=list.get(0).img5;
+                    img6UrlPath=list.get(0).img6;
+                    img7UrlPath=list.get(0).img7;
+                    img8UrlPath=list.get(0).img8;
+                    img9UrlPath=list.get(0).img9;
+                }
             }
 
             @Override
@@ -1320,5 +1426,282 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 
             }
         });
+    }
+    private void updateImag(final String path){
+        if(!mydialog.isShowing()) {
+            mydialog.show();
+        }
+        final RequestParams params=new RequestParams(getInterface.UpdateImag);
+        params.setMultipart(true);
+        params.setConnectTimeout(80000);
+        params.setMaxRetryCount(5);//
+        Log.e("TAG","path路径=="+path);
+        params.addBodyParameter("imgdata",new File(path));
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(new File(path));
+            int fileLen = fis.available();
+            Log.e("TAG","上传文件大小=="+fileLen/1024+"==path="+path.substring(path.length()-5,path.length()));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//           params.setMaxRetryCount(2);
+        Log.e("TAG","参数--"+params.getParams("imgdata"));
+        Log.e("TAG","上传图片URLparams=="+params);
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.e("TAG","图片上传结果---"+result);
+                Log.e("TAG","select4=="+"\n"+path+"\n"+img4Path+"\n"+path.equals(img4Path));
+                if(!TextUtils.isEmpty(path)&&path.equals(zqfPath)){
+                    zqfUrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+//                    str=GetJsonUtils.getZQF(getContext(),result);
+                    Log.e("TAG","这里左前方=="+zqfUrlPath);
+                }else if(!TextUtils.isEmpty(path)&&path.equals(zqPath)){
+                    //正前方图pain
+                    zfUrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里正前方图片=="+zfUrlPath);
+                }else if(!TextUtils.isEmpty(path)&&path.equals(zhfPath)){
+                    //正后方图pain
+                    zhfUrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里正后方图片=="+zhfUrlPath);
+                }else if(!TextUtils.isEmpty(path)&&path.equals(img4Path)){
+                    //正后方图pain
+                    img4UrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里img4UrlPath图片=="+img4UrlPath);
+                }else if(!TextUtils.isEmpty(path)&&path.equals(img5Path)){
+                    //正后方图pain
+                    img5UrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里img5UrlPath图片=="+img5UrlPath);
+                }else if(!TextUtils.isEmpty(path)&&path.equals(img6Path)){
+                    //正后方图pain
+                    img6UrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里img6UrlPath图片=="+img6UrlPath);
+                }else if(!TextUtils.isEmpty(path)&&path.equals(img7Path)){
+                    //正后方图pain
+                    img7UrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里img7UrlPath图片=="+img7UrlPath);
+                }else if(!TextUtils.isEmpty(path)&&path.equals(img8Path)){
+                    //正后方图pain
+                    img8UrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里img8UrlPath图片=="+img8UrlPath);
+                }
+                else if(!TextUtils.isEmpty(path)&&path.equals(img9Path)){
+                    //正后方图pain
+                    img9UrlPath= GetJsonUtils.getZQF(BuMessageActivity.this,result);
+                    Log.e("TAG","这里img9UrlPath图片=="+img9UrlPath);
+                }
+//                ZQFBean.zqpath=str;
+                Log.e("TAG","上传图片结果左前方图片=="+zqfUrlPath);
+                Log.e("TAG","上传图片结果正前方图片="+zfUrlPath);
+                Log.e("TAg","上传图片结果正后方图片="+zhfUrlPath);
+                Log.e("TAG","上传图片结果img4UrlPath图片=="+img4UrlPath);
+                Log.e("TAG","上传图片结果img5UrlPath图片="+img5UrlPath);
+                Log.e("TAg","上传图片结果img6UrlPath图片="+img6UrlPath);
+                Log.e("TAG","上传图片结果img7UrlPath图片=="+img7UrlPath);
+                Log.e("TAG","上传图片结果img8UrlPath图片="+img8UrlPath);
+                Log.e("TAg","上传图片结果img9UrlPath图片="+img9UrlPath);
+//                Log.e("TAG","三张大图上传结果=="+(!TextUtils.isEmpty(ZHFBean.zhfpath)&&!TextUtils.isEmpty(ZQBean.zqpath)&&!TextUtils.isEmpty(ZQFBean.zqpath)));
+                if(!TextUtils.isEmpty(zqfUrlPath)&&!TextUtils.isEmpty(zfUrlPath)&&!TextUtils.isEmpty(zhfUrlPath)
+                        &&!TextUtils.isEmpty(img4UrlPath)&&!TextUtils.isEmpty(img5UrlPath)&&!TextUtils.isEmpty(img6UrlPath)
+                        &&!TextUtils.isEmpty(img7UrlPath)&&!TextUtils.isEmpty(img8UrlPath)&&!TextUtils.isEmpty(img9UrlPath)){
+                    //上传全部信息
+                    Log.e("TAG","上传补录车量信息====="+BeanFlag.Flag);
+                    if(BeanFlag.Flag){
+                        //修改接口
+                        Log.e("TAG","修改接口");
+//                        setCartMsg();
+                        updateCartMsg(CartID);
+                    }else {
+                        Log.e("TAG","上传接口");
+                        updateCartMsg(CartID);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+//                if(mydialog.isShowing()){
+//                    mydialog.dismiss();
+//                }
+                if(!TextUtils.isEmpty(ZHFBean.zhfpath)&&!TextUtils.isEmpty(ZQBean.zqpath)&&!TextUtils.isEmpty(ZQFBean.zqpath)){
+//                    ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";str="";
+                }else{
+                    if(!TextUtils.isEmpty(ex.getMessage().toString())){
+                        if (ex instanceof HttpException) { // 网络错误
+                            HttpException httpEx = (HttpException) ex;
+                            int responseCode = httpEx.getCode();
+                            String responseMsg = httpEx.getMessage();
+                            String errorResult = httpEx.getResult();
+                            Log.e("TAG","responseCode=="+responseCode+"=responseMsg="+responseMsg+"=errorResult="+errorResult);
+                        } else {
+// 其他错误//
+                        }
+                        Log.e("TAG","ex.getMessage().toString()=="+ex.getMessage().toString());
+//                        mydialog.dismiss();
+//                        ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";str="";
+//                        Toast.makeText(getContext(),"图片上传失败",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+    //上传补录车辆信息
+    private void updateCartMsg(final String itemId){
+        Log.e("TAG","开始上传");
+        RequestParams requestParams=new RequestParams(getInterface.UpCartData);
+        //    参数 时间   regDate  merchant_code 商家ID  vin,groupid,carName(车型),
+        // mileage,target_price,userid,brandid,seriesid,zhengqian45,zhengqian,zhenghou
+//        cartItemID,tv_quyue.getText().toString(),quyuID,edit_num.getText().toString(),
+//                tv_time.getText().toString(),edt_name.getText().toString(),tv_tel.getText().toString(),
+//                brangName,brandid,seriseName,seriesid,cartName,modelid,tv_cartFenlei.getText().toString(),fenleiID,
+//                Tv_guohu.getText().toString(),guohuID,edt_licheng.getText().toString(),edt_price.getText().toString(),zqfPath,zqPath,zhfPath,
+//                img4Path,img5Path,img6Path,img7Path,img8Path,img9Path,picID
+        requestParams.addBodyParameter("id",itemId);
+        requestParams.addBodyParameter("vin",edit_num.getText().toString());
+        requestParams.addBodyParameter("merchant_code",quyuID);
+        requestParams.addBodyParameter("groupid", UserBean.groupids);
+        requestParams.addBodyParameter("userid",UserBean.id);
+        requestParams.addBodyParameter("vendorId",brandid);
+        requestParams.addBodyParameter("brandId",seriesid);
+        requestParams.addBodyParameter("regDate",tv_time.getText().toString().trim());
+        requestParams.addBodyParameter("mileage",edt_licheng.getText().toString());
+        requestParams.addBodyParameter("target_price",edt_price.getText().toString());
+        //九张大图
+        requestParams.addBodyParameter("zhengqian45",zqfUrlPath);
+        requestParams.addBodyParameter("zhengqian",zfUrlPath);
+        requestParams.addBodyParameter("zhenghou",zhfUrlPath);
+        requestParams.addBodyParameter("picone",img4UrlPath);
+        requestParams.addBodyParameter("pictwo",img5UrlPath);
+        Log.e("TAG","img66=="+img6UrlPath);
+        requestParams.addBodyParameter("picthree",img6UrlPath);
+        requestParams.addBodyParameter("picfour",img7UrlPath);
+        requestParams.addBodyParameter("picfive",img8UrlPath);
+        requestParams.addBodyParameter("picsix",img9UrlPath);
+//
+//        Log.e("TAG","上传车辆信息左前方==="+zhfUrlPath);
+//        Log.e("TAG","上传车辆信息正前==="+zfUrlPath);
+//        Log.e("TAG","上传车辆信息正后方==="+zhfUrlPath);
+        requestParams.addBodyParameter("carStyleId",modelid);//modelid
+        requestParams.addBodyParameter("carName",cartName);
+        requestParams.addBodyParameter("pid",picID);
+        //上传电话和名字
+        //有对应id直接传ID
+
+        requestParams.addBodyParameter("tel",tv_tel.getText().toString());
+        requestParams.addBodyParameter("name",edt_name.getText().toString());
+        //车辆分类
+        requestParams.addBodyParameter("isDaTing",fenleiID);
+        requestParams.addBodyParameter("transterstatus",guohuID);
+        requestParams.addBodyParameter("makeup","1");
+        requestParams.setMaxRetryCount(2);
+        Log.e("TAG","上传地址=="+requestParams.getUri());
+        Log.e("TAG","上传参数=="+requestParams.getBodyParams());
+        Log.e("TAG","上传URL=="+requestParams);
+        x.http().post(requestParams, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.e("TAG","修改成功=="+result);
+                if(mydialog.isShowing()) {
+                    mydialog.dismiss();
+                }
+
+                imgCount--;
+//                pro.setProgress((k+1)*1);
+//                if(k+1==selectList.size()){
+//                    pro.dismiss();
+//                }
+                Log.e("TAG","");
+//                mydialog.dismiss();
+//                {"status":1,"msg":"添加成功","id":"2261"}
+                try {
+                    JSONObject jsonObject=new JSONObject(result);
+                    String status=jsonObject.getString("status");
+                    final String msg;
+                    if (status.equals("1")) {
+                        msg = jsonObject.getString("msg");
+//                        mySuccess=new MySuccess(BuMessageActivity.this,"修改成功");
+//                        mySuccess.show();
+                        cleanDate();
+//                        mydialog.dismiss();
+                        final Mydialog successdialog=new Mydialog(BuMessageActivity.this,"修改成功，稍后自动跳转...");
+                        successdialog.show();
+                        if(imgCount==0){
+                            new Thread(){
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    try {
+                                        Thread.sleep(3000);
+                                        if(successdialog.isShowing()){
+                                            successdialog.dismiss();
+                                        }
+                                        finish();
+
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }.start();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                if(!TextUtils.isEmpty(ex.getMessage().toString())){
+//                    mydialog.dismiss();
+//                    ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";
+//                    zqfPath="";
+//                    zhfPath="";
+//                    zqPath="";
+                    cleanDate();
+                    Log.e("TAG","上传信息识别=="+ex.getMessage().toString());
+                    Toast.makeText(BuMessageActivity.this,"上传信息失败",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+                if(mydialog.isShowing()){
+                    mydialog.dismiss();
+                }
+
+            }
+        });
+    }
+    private void cleanDate(){
+        zqfUrlPath="";
+        zfUrlPath="";
+        zhfUrlPath="";
+        img4UrlPath="";
+        img5UrlPath="";
+        img6UrlPath="";
+        img7UrlPath="";
+        img8UrlPath="";
+        img9UrlPath="";
     }
 }

@@ -9,7 +9,7 @@ public class BuCartListBean {
     public String isDaTing,vin,licensePlate,cardType,name,id,tel,contact_name,imgUrl,userName,time,price,carName,mileage,regTime;
     public String quyuID,quyuName,modelID,seriseID,brandid,modelName,seriseName,brandName;
     public boolean Flag;
-    public String img1,img2,img3;
+    public String img1,img2,img3,img4,img5,img6,img7,img8,img9;
     public String ListID,NameTelID,transterstatus;
     public String cartID;
 }

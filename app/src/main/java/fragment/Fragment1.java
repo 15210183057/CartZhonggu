@@ -65,6 +65,12 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+//        getBuCartList(i);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -97,18 +103,17 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                refreshlayout.finishRefresh(2000);
+                refreshlayout.finishRefresh(3000);
                 Log.e("TAG","下拉刷新");
                 refreshlayout.getLayout().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(i>1){
-                            i--;
-                            list.clear();
-                            getBuCartList(i);
-                        }
+                         i=1;
+                        list.clear();
+                        Log.e("TAG","下拉刷新i=="+i);
+                        getBuCartList(i);
                     }
-                },3000);
+                },0);
 
             }
         });
@@ -163,6 +168,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
 //        intent.putExtra("name"+i,list.get(i).name);
 //        intent.putExtra("i",""+i);
 //        startActivity(intent);
+        Log.e("TAG","点击的是第+"+i+"条数据");
         Intent intent=new Intent(getContext(), BuMessageActivity.class);
                 intent.putExtra("cartID",""+list.get(i).cartID);
                 Log.e("TAG","cartID=="+list.get(i).cartID);
@@ -243,8 +249,9 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
 //        mkerp.zgcw.cn/api/api_car/getMylist?userid=16&page=1&merchantid=72&makeup=0
         requestParams.addBodyParameter("userid",UserBean.id);
         requestParams.addBodyParameter("page",current_page+"");
-//        requestParams.addBodyParameter("merchantid","商户id");
+        requestParams.addBodyParameter("merchantid","244");
         requestParams.addBodyParameter("makeup","0");
+//        requestParams.addBodyParameter("vin","666");
 //        requestParams.addBodyParameter("where","blu=0 and groupid in("+ UserBean.groupids+") and status=1");
        Log.e("TAG","requestParams接口拼接地址为=="+requestParams+"");
         x.http().post(requestParams, new Callback.CommonCallback<String>() {

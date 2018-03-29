@@ -214,6 +214,8 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
 //        }
         Intent intent=new Intent(getContext(),BuMessageActivity.class);
         intent.putExtra("Flag","true");
+        intent.putExtra("cartID",list.get(i).cartID);
+        Log.e("TAG","cartID=="+list.get(i).cartID);
         startActivity(intent);
 
 //        Intent intent=new Intent();
@@ -313,8 +315,16 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("TAG","f3=onResume");
+//        getBuCartList(i);
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        Log.e("TAG","f3=onHiddenChanged");
 //        if(!hidden){
 //            list.clear();
 //            if(!mydialog.isShowing()){

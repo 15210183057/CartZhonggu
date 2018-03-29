@@ -60,6 +60,7 @@ public class MyDBUtils {
             bran.img7 = cursor.getString(26);
             bran.img8 = cursor.getString(27);
             bran.img9 = cursor.getString(28);
+            bran.picID=cursor.getString(29);
             list.add(bran);
         }
         cursor.close();
@@ -106,8 +107,8 @@ public class MyDBUtils {
 
         values.put("img7",strings[25].toString());
         values.put("img8",strings[26].toString());
-        Log.e("TAG","string[27]=="+strings[27].toString());
         values.put("img9",strings[27].toString());
+        values.put("picID",strings[28].toString());
         database.insert(dbName,null,values);
         database.close();
     }
@@ -120,7 +121,7 @@ public class MyDBUtils {
                 "cartfenlei=?,cartfenleiid=?,guohuname=?,guohuid=?,"+
                 "licheng=?,price=?,img1=?,img2=?,"+
                 "img3=?,img4=?,img5=?,img6=?,"+
-                "img7=?,img8=?,img9=? "+
+                "img7=?,img8=?,img9=?,picID=? "+
                 "where id="+str[0].toString(),str);
         database.close();
     }

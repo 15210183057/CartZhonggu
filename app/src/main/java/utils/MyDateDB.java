@@ -40,7 +40,8 @@ public class MyDateDB extends SQLiteOpenHelper {
             "img6 text, "+
             "img7 text, "+
             "img8 text, "+
-            "img9 text)";
+            "img9 text, "+
+            "picID text)";
 
     private Context mContext;
 
