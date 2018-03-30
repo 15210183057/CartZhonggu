@@ -911,9 +911,18 @@ public class newFragment extends Fragment implements View.OnClickListener{
                     if(mydialog.isShowing()){
                         mydialog.dismiss();
                     }
-                    if(!TextUtils.isEmpty(ZHFBean.zhfpath)&&!TextUtils.isEmpty(ZQBean.zqpath)&&!TextUtils.isEmpty(ZQFBean.zqpath)){
-                        ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";str="";
-                    }else{
+                    if(!TextUtils.isEmpty(zqfPath)){
+                        ZQFBean.zqpath="";
+                    }
+                    if(!TextUtils.isEmpty(zqPath)){
+                        ZQBean.zqpath="";
+                    }
+                    if(!TextUtils.isEmpty(zhfPath)){
+                        ZHFBean.zhfpath="";
+                    }
+//                    if(!TextUtils.isEmpty(ZHFBean.zhfpath)&&!TextUtils.isEmpty(ZQBean.zqpath)&&!TextUtils.isEmpty(ZQFBean.zqpath)){
+//                        ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";str="";
+//                    }else{
                         if(!TextUtils.isEmpty(ex.getMessage().toString())){
                             if (ex instanceof HttpException) { // 网络错误
                                 HttpException httpEx = (HttpException) ex;
@@ -929,7 +938,7 @@ public class newFragment extends Fragment implements View.OnClickListener{
                             ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";str="";
                             Toast.makeText(getContext(),"图片上传失败",Toast.LENGTH_LONG).show();
                         }
-                    }
+//                    }
                 }
 
                 @Override
@@ -1103,7 +1112,7 @@ public class newFragment extends Fragment implements View.OnClickListener{
                         msg=jsonObject.getString("msg");
                         mydialog.dismiss();
                         Log.e("TAG","!mySuccess.isShowing()"+(!mySuccess.isShowing()));
-                       if(!mySuccess.isShowing()) {
+                       if(!mySuccess1.isShowing()) {
                            mySuccess1.show();
                        }
                     }else{

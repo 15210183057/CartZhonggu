@@ -137,4 +137,29 @@ ProgressBar progressBar;
         Matcher matcher = p.matcher(pInput);
         return matcher.matches();
     }
+    //读取本地数据
+//        SharedUtils sharedUtils=new SharedUtils();
+//        String str=sharedUtils.readXML(MyApplication.cartlistmsg,"count",getActivity());
+//        int size=0;
+//        if(!TextUtils.isEmpty(str)) {
+//           size  = Integer.parseInt(str);
+//        }
+//        listBeans.clear();
+//        for(int i=0;i<size;i++) {
+//           BuCartListBean buCartListBean = new BuCartListBean();
+//           String posion=sharedUtils.readXML(MyApplication.cartlistmsg,"posion"+i,getActivity());
+//           Log.e("TAG","posion=="+posion);
+//           buCartListBean.vin = sharedUtils.readXML(MyApplication.cartlistmsg, "vin" + i, getActivity());
+//           buCartListBean.cardType = sharedUtils.readXML(MyApplication.cartlistmsg, "cardType" + i, getActivity());
+//           buCartListBean.name = sharedUtils.readXML(MyApplication.cartlistmsg, "name" +i , getActivity());
+//           buCartListBean.licensePlate = sharedUtils.readXML(MyApplication.cartlistmsg, "licensePlate" + i, getActivity());
+//           if(!buCartListBean.vin.isEmpty()
+//                         && !buCartListBean.cardType.isEmpty()
+//                            &&!buCartListBean.name.isEmpty()
+//                            &&!buCartListBean.licensePlate.isEmpty()){
+//               listBeans.add(buCartListBean);
+//           }else{
+////               Log.e("TAG","为空");
+//           }
+//       }
 }
