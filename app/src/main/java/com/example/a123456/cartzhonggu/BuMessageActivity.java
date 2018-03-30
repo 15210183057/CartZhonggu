@@ -133,6 +133,10 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
     private List<BuCartListBean>list=new ArrayList<BuCartListBean>();
     private String zqfUrlPath,zfUrlPath,zhfUrlPath,img4UrlPath,img5UrlPath,img6UrlPath,img7UrlPath,img8UrlPath,img9UrlPath;
     private int imgCount;//记录要修改多少张图片
+    Mydialog successdialog;
+    int errorCount=0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +145,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         setPermissions();
         MyRegistReciver();
         initView();
+        successdialog=new Mydialog(BuMessageActivity.this,"修改成功，稍后自动跳转...");
         CartID= getIntent().getStringExtra("cartID");
         Log.e("TAG","接收到的itemid=="+CartID);
         getItemCartDate();
@@ -401,41 +406,51 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                             Log.e("TAG","修改图片==img8Path="+img8Path);
                             Log.e("TAG","修改图片==img9Path="+img9Path);
                             Log.e("TAG","修改图片zqf=boolean=="+(!TextUtils.isEmpty(zqPath)&&!zqPath.contains("http")));
+                            imgCount=0;
                             if(!TextUtils.isEmpty(zqfPath)&&!zqfPath.contains("http")){
-                                updateImag(zqfPath);
                                 imgCount++;
+                                zqfUrlPath="";
+                                updateImag(zqfPath);
                             }
                             if(!TextUtils.isEmpty(zqPath)&&!zqPath.contains("http")){
-                                updateImag(zqPath);
                                 imgCount++;
+                                zfUrlPath="";
+                                updateImag(zqPath);
                             }
                             if(!TextUtils.isEmpty(zhfPath)&&!zhfPath.contains("http")){
-                                updateImag(zhfPath);
                                 imgCount++;
+                                zhfUrlPath="";
+                                updateImag(zhfPath);
                             }
                             if(!TextUtils.isEmpty(img4Path)){
-                                updateImag(img4Path);
                                 imgCount++;
+                                img4UrlPath="";
+                                updateImag(img4Path);
                             }
                             if(!TextUtils.isEmpty(img5Path)){
-                                updateImag(img5Path);
                                 imgCount++;
+                                img5UrlPath="";
+                                updateImag(img5Path);
                             }
                             if(!TextUtils.isEmpty(img6Path)){
-                                updateImag(img6Path);
                                 imgCount++;
+                                img6UrlPath="";
+                                updateImag(img6Path);
                             }
                             if(!TextUtils.isEmpty(img7Path)){
-                                updateImag(img7Path);
                                 imgCount++;
+                                img7UrlPath="";
+                                updateImag(img7Path);
                             }
                             if(!TextUtils.isEmpty(img8Path)){
-                                updateImag(img8Path);
                                 imgCount++;
+                                img8UrlPath="";
+                                updateImag(img8Path);
                             }
                             if(!TextUtils.isEmpty(img9Path)){
-                                updateImag(img9Path);
                                 imgCount++;
+                                img9UrlPath="";
+                                updateImag(img9Path);
                             }
 
                         }
@@ -1402,12 +1417,14 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                     Glide.with(BuMessageActivity.this).load(list.get(0).img7).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img7_newfragment);
                     Glide.with(BuMessageActivity.this).load(list.get(0).img8).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img8_newfragment);
                     Glide.with(BuMessageActivity.this).load(list.get(0).img9).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(img9_newfragment);
+                    Log.e("TAG","img4=="+list.get(0).img4);
                     img4UrlPath=list.get(0).img4;
                     img5UrlPath=list.get(0).img5;
                     img6UrlPath=list.get(0).img6;
                     img7UrlPath=list.get(0).img7;
                     img8UrlPath=list.get(0).img8;
                     img9UrlPath=list.get(0).img9;
+                    Log.e("TAG","接收img4=="+img4UrlPath);
                 }
             }
 
@@ -1525,28 +1542,56 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-//                if(mydialog.isShowing()){
-//                    mydialog.dismiss();
-//                }
-                if(!TextUtils.isEmpty(ZHFBean.zhfpath)&&!TextUtils.isEmpty(ZQBean.zqpath)&&!TextUtils.isEmpty(ZQFBean.zqpath)){
-//                    ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";str="";
-                }else{
-                    if(!TextUtils.isEmpty(ex.getMessage().toString())){
+                Log.e("TAG","onError()");
+//                imgCount=0;
+                errorCount++;
+                if(!TextUtils.isEmpty(zqfPath)&&!zqfPath.contains("http")){
+                    zqfUrlPath="";
+                }
+                if(!TextUtils.isEmpty(zqPath)&&!zqPath.contains("http")){
+                    zfUrlPath="";
+                }
+                if(!TextUtils.isEmpty(zhfPath)&&!zhfPath.contains("http")){
+                    zhfUrlPath="";
+                }
+                if(!TextUtils.isEmpty(img4Path)){
+                    img4UrlPath="";
+                }
+                if(!TextUtils.isEmpty(img5Path)){
+                    img5UrlPath="";
+                }
+                if(!TextUtils.isEmpty(img6Path)){
+                    img6UrlPath="";
+                }
+                if(!TextUtils.isEmpty(img7Path)){
+                   img7UrlPath="";
+                }
+                if(!TextUtils.isEmpty(img8Path)){
+                    img8UrlPath="";
+                }
+                if(!TextUtils.isEmpty(img9Path)){
+                    img9UrlPath="";
+                }
+                    if(!TextUtils.isEmpty(ex.getMessage().toString())) {
+                        if (mydialog.isShowing()) {
+                            mydialog.dismiss();
+                        }
                         if (ex instanceof HttpException) { // 网络错误
                             HttpException httpEx = (HttpException) ex;
                             int responseCode = httpEx.getCode();
                             String responseMsg = httpEx.getMessage();
                             String errorResult = httpEx.getResult();
-                            Log.e("TAG","responseCode=="+responseCode+"=responseMsg="+responseMsg+"=errorResult="+errorResult);
+                            Log.e("TAG", "responseCode==" + responseCode + "=responseMsg=" + responseMsg + "=errorResult=" + errorResult);
                         } else {
 // 其他错误//
                         }
-                        Log.e("TAG","ex.getMessage().toString()=="+ex.getMessage().toString());
+                        Log.e("TAG", "ex.getMessage().toString()==" + ex.getMessage().toString());
 //                        mydialog.dismiss();
 //                        ZQFBean.zqpath="";ZQBean.zqpath="";ZHFBean.zhfpath="";str="";
-//                        Toast.makeText(getContext(),"图片上传失败",Toast.LENGTH_LONG).show();
+                        if (errorCount == imgCount) {
+                            Toast.makeText(BuMessageActivity.this, "图片上传失败", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
             }
 
             @Override
@@ -1620,7 +1665,6 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                     mydialog.dismiss();
                 }
 
-                imgCount--;
 //                pro.setProgress((k+1)*1);
 //                if(k+1==selectList.size()){
 //                    pro.dismiss();
@@ -1638,9 +1682,9 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //                        mySuccess.show();
                         cleanDate();
 //                        mydialog.dismiss();
-                        final Mydialog successdialog=new Mydialog(BuMessageActivity.this,"修改成功，稍后自动跳转...");
                         successdialog.show();
-                        if(imgCount==0){
+                        Log.e("TAG","imgCount=="+imgCount);
+                            Log.e("TAG","取消dialog提示跳转");
                             new Thread(){
                                 @Override
                                 public void run() {
@@ -1658,7 +1702,6 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                                 }
                             }.start();
                         }
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1673,7 +1716,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //                    zqfPath="";
 //                    zhfPath="";
 //                    zqPath="";
-                    cleanDate();
+//                    cleanDate();
                     Log.e("TAG","上传信息识别=="+ex.getMessage().toString());
                     Toast.makeText(BuMessageActivity.this,"上传信息失败",Toast.LENGTH_LONG).show();
                 }

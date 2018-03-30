@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a123456.cartzhonggu.BuMessageActivity;
 import com.example.a123456.cartzhonggu.R;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -78,7 +79,9 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     int selectcount=0;//选中的条数
     Mydialog mydialog;
     ProgressDialog pro;
-//    String quyuTelName;//车商信息对于的用户和电话
+    private int RedConut=0;
+
+    //    String quyuTelName;//车商信息对于的用户和电话
     public Fragment2() {
         // Required empty public constructor
     }
@@ -145,6 +148,10 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 //                    adapter.notifyDataSetChanged();
 //                    count=i;
 //                }
+                RedConut=0;
+                listBeans.clear();
+                setDate();
+                adapter.notifyDataSetChanged();
             }
         });
         refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
@@ -165,8 +172,11 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 //                        }
 //                        count=list.size();
 //                        adapter.notifyDataSetChanged();
+                            RedConut += 5;
+                        setDate();
+                        adapter.notifyDataSetChanged();
                     }
-                },3000);
+                },0);
 
                 refreshlayout.finishLoadmore(2000);
             }
@@ -176,9 +186,11 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     @Override
     public void onHiddenChanged(boolean isVisibleToUser) {
         Log.e("TAG","onHiddenChanged==="+isVisibleToUser);
+        RedConut=0;
         if(isVisibleToUser){
             img_topleft.setText("全选");
         }
+        listBeans.clear();
         setDate();
         if(listBeans!=null){
             if(listBeans.size()>0) {
@@ -196,46 +208,18 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 
     //设置数据源
     private void setDate() {
-        //读取本地数据
-//        SharedUtils sharedUtils=new SharedUtils();
-//        String str=sharedUtils.readXML(MyApplication.cartlistmsg,"count",getActivity());
-//        int size=0;
-//        if(!TextUtils.isEmpty(str)) {
-//           size  = Integer.parseInt(str);
-//        }
+
 //        listBeans.clear();
-//        for(int i=0;i<size;i++) {
-//           BuCartListBean buCartListBean = new BuCartListBean();
-//           String posion=sharedUtils.readXML(MyApplication.cartlistmsg,"posion"+i,getActivity());
-//           Log.e("TAG","posion=="+posion);
-//           buCartListBean.vin = sharedUtils.readXML(MyApplication.cartlistmsg, "vin" + i, getActivity());
-//           buCartListBean.cardType = sharedUtils.readXML(MyApplication.cartlistmsg, "cardType" + i, getActivity());
-//           buCartListBean.name = sharedUtils.readXML(MyApplication.cartlistmsg, "name" +i , getActivity());
-//           buCartListBean.licensePlate = sharedUtils.readXML(MyApplication.cartlistmsg, "licensePlate" + i, getActivity());
-//           if(!buCartListBean.vin.isEmpty()
-//                         && !buCartListBean.cardType.isEmpty()
-//                            &&!buCartListBean.name.isEmpty()
-//                            &&!buCartListBean.licensePlate.isEmpty()){
-//               listBeans.add(buCartListBean);
-//           }else{
-////               Log.e("TAG","为空");
-//           }
-//       }
-        listBeans.clear();
-//        int length=utils.chaXun().size();
-//        if(length>10){
-//
-//        }
-//        for(int i=0;i<length;i++){
-//            listBeans.add(u)
-//        }
-        listBeans .addAll(utils.chaXun());
-        Log.e("TAG","查询到的listsize=="+listBeans.size());
-        for(int i=0;i<listBeans.size();i++){
-            Log.e("TAG","itemid=="+listBeans.get(i).itemid);
+//        listBeans .addAll(utils.chaXun());
+        Log.e("TAG","RedConut=="+RedConut+"utils.chaXun().size()==="+utils.chaXun().size());
+        for(int i=RedConut;i<RedConut+5;i++){
+//            Log.e("TAG","itemid=="+listBeans.get(i).itemid);
+            if(i<utils.chaXun().size()){
+                Log.e("TAG","utils.chaXun().get(i)=="+utils.chaXun().get(i));
+                listBeans.add(utils.chaXun().get(i));
+            }
         }
     }
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Toast.makeText(getContext(),"点击第+"+i+"条数据",Toast.LENGTH_SHORT).show();
@@ -292,12 +276,12 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                 }else{
                     k=0;
                     pro.setMax(selectList.size()*1);
+                    mydialog =new Mydialog(getActivity(),"无网络链接,请检出网络设置");
                     ConnectivityManager manager = (ConnectivityManager)getActivity().getSystemService(CONNECTIVITY_SERVICE);
                     // 检查网络连接，如果无网络可用，就不需要进行连网操作等
                     NetworkInfo info = manager.getActiveNetworkInfo();
                     if (info == null || !manager.getBackgroundDataSetting()) {
                         Toast.makeText(getActivity(), "无网络链接,请检出网络设置",Toast.LENGTH_SHORT).show();
-                        mydialog =new Mydialog(getActivity(),"无网络链接,请检出网络设置");
                         mydialog.show();
                     }else{
                         mydialog.dismiss();
@@ -446,32 +430,9 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                         &&!TextUtils.isEmpty(img7UrlPath)&&!TextUtils.isEmpty(img8UrlPath)&&!TextUtils.isEmpty(img9UrlPath)){
                     //上传全部信息
                     Log.e("TAG","上传补录车量信息====="+BeanFlag.Flag);
-                    if(BeanFlag.Flag){
-                        //修改接口
-                        Log.e("TAG","修改接口");
-//                        setCartMsg();
-                    }else {
                         Log.e("TAG","上传接口");
                         updateCartMsg(selectList.get(k).itemid);
-                    }
 
-                }
-                else {
-                    Log.e("TAG","修改BeanFlag.Flag=="+BeanFlag.Flag);
-                    if (BeanFlag.Flag) {
-                        if (!TextUtils.isEmpty(selectPath1) && TextUtils.isEmpty(ZQFBean.zqpath)) {
-                            Log.e("TAG","左前方45°角图片修改失败=="+ZQFBean.zqpath);
-                            Toast.makeText(getContext(),"左前方45°角图片修改失败",Toast.LENGTH_SHORT).show();
-                        } if (!TextUtils.isEmpty(selectPath2) && TextUtils.isEmpty(ZQBean.zqpath)) {
-                            //正前方图pain
-                            Log.e("TAG","正前方图片修改失败=="+ZQBean.zqpath);
-                            Toast.makeText(getContext(),"正前方图片修改失败",Toast.LENGTH_SHORT).show();
-                        } if (!TextUtils.isEmpty(selectPath3) && TextUtils.isEmpty(ZHFBean.zhfpath)) {
-                            //正后方图pain
-                            Log.e("TAG","正后方图片修改失败=="+ZHFBean.zhfpath);
-                            Toast.makeText(getContext(),"正后方图片修改失败",Toast.LENGTH_SHORT).show();
-                        }
-                    }
                 }
             }
 
@@ -584,19 +545,40 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                     String status=jsonObject.getString("status");
                     String msg;
                     if (status.equals("1")){
+                        final Mydialog successdialog=new Mydialog(getActivity(),"上传成功");
+                        successdialog.show();
                         msg=jsonObject.getString("msg");
 //                        mySuccess=new MySuccess(getContext(),"上传成功");
 //                        mySuccess.show();
                         selectcount--;
                         cleanDate();
                         utils.setDelete(itemId);
-                        setDate();
-                        adapter.notifyDataSetChanged();
+                        Log.e("TAG","list=="+itemId);
+
                         Log.e("TAG","=selectcount=selectList.size()="+selectcount+"=="+selectList.size());
                         if(selectcount>0) {
                             k++;
                             getUpDateMsg(selectcount);
-                            Log.e("TAG","list=="+listBeans.get(0).itemid);
+                        }else{
+                            Log.e("TAG","这里最后走");
+                            new Thread(){
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    try {
+                                        Thread.sleep(2000);
+                                        if(successdialog.isShowing()){
+                                            successdialog.dismiss();
+                                        }
+
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }.start();
+                            listBeans.clear();
+                            setDate();
+                            adapter.notifyDataSetChanged();
                         }
 
                         mydialog.dismiss();

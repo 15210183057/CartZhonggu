@@ -28,7 +28,7 @@ public class MyDBUtils {
     public  List<Bran> chaXun() {
         SQLiteDatabase db = myDateDB.getWritableDatabase();
         ArrayList<Bran> list = new ArrayList<Bran>();
-        Cursor cursor = db.rawQuery("select * from " + dbName, null);
+        Cursor cursor = db.rawQuery("select * from " + dbName+" order by _id asc", null);
         for (int i = 0; i < cursor.getCount(); i++) {
             Bran bran = new Bran();
             cursor.moveToNext();

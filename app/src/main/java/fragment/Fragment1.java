@@ -67,7 +67,8 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-//        getBuCartList(i);
+        list.clear();
+        getBuCartList(i);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
         list=new ArrayList<BuCartListBean>();
         mydialog=new Mydialog(getContext(),"正在加载请稍后.....");
         mydialog.show();
-        getBuCartList(i);
+//        getBuCartList(i);
 
         view=inflater.inflate(R.layout.fragment_fragment1, container, false);
          img_topleft=view.findViewById(R.id.img_left);
@@ -303,8 +304,17 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
             if (data != null) {
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 Toast.makeText(getActivity(),"扫描结果为："+content,Toast.LENGTH_SHORT).show();
-                Intent intent =new Intent(getActivity(),WebViewActivity.class);
+                Log.e("TAG","扫描结果为=="+content);
+//                扫描结果为==http://tjkg.zgcw.cn:9008/carinfo.html?muid=tianjin001&code=5158
+//                Intent intent =new Intent(getActivity(),WebViewActivity.class);
+                Intent intent=new Intent(getActivity(),BuMessageActivity.class);
                 intent.putExtra("url",content);
+                String arr[]=content.split("&");
+                Log.e("TAG","arr[1]="+arr[1].toString());//=5158
+                int index=arr[1].toString().indexOf("=");//获取等号的位置
+                String cartID=arr[1].substring(index+1,arr[1].length());
+                Log.e("TAG","cartID=="+cartID);
+                intent.putExtra("cartID",cartID);
                 startActivity(intent);
             }
         }
