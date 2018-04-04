@@ -80,7 +80,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     Mydialog mydialog;
     ProgressDialog pro;
     private int RedConut=0;
-
+   Mydialog successdialog;
     //    String quyuTelName;//车商信息对于的用户和电话
     public Fragment2() {
         // Required empty public constructor
@@ -91,6 +91,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+      successdialog =new Mydialog(getActivity(),"上传成功");
+
         pro =new ProgressDialog(getContext());
         pro.setTitle("请稍等...");
         pro.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -277,12 +279,24 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                     k=0;
                     pro.setMax(selectList.size()*1);
                     mydialog =new Mydialog(getActivity(),"无网络链接,请检出网络设置");
-                    ConnectivityManager manager = (ConnectivityManager)getActivity().getSystemService(CONNECTIVITY_SERVICE);
+                    final ConnectivityManager manager = (ConnectivityManager)getActivity().getSystemService(CONNECTIVITY_SERVICE);
                     // 检查网络连接，如果无网络可用，就不需要进行连网操作等
                     NetworkInfo info = manager.getActiveNetworkInfo();
                     if (info == null || !manager.getBackgroundDataSetting()) {
                         Toast.makeText(getActivity(), "无网络链接,请检出网络设置",Toast.LENGTH_SHORT).show();
                         mydialog.show();
+                        new Thread(){
+                            @Override
+                            public void run() {
+                                super.run();
+                                try {
+                                    Thread.sleep(3000);
+                                    mydialog.dismiss();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
                     }else{
                         mydialog.dismiss();
                         getUpDateMsg(selectcount);
@@ -446,6 +460,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                 }else{
 
                     if(!TextUtils.isEmpty(ex.getMessage().toString())){
+                        cleanDate();
                         if(pro.isShowing()){
                             pro.dismiss();
                         }
@@ -545,7 +560,6 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                     String status=jsonObject.getString("status");
                     String msg;
                     if (status.equals("1")){
-                        final Mydialog successdialog=new Mydialog(getActivity(),"上传成功");
                         successdialog.show();
                         msg=jsonObject.getString("msg");
 //                        mySuccess=new MySuccess(getContext(),"上传成功");
@@ -566,7 +580,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
                                 public void run() {
                                     super.run();
                                     try {
-                                        Thread.sleep(2000);
+                                        Thread.sleep(1000);
                                         if(successdialog.isShowing()){
                                             successdialog.dismiss();
                                         }
@@ -598,7 +612,9 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
 //                    zqfPath="";
 //                    zhfPath="";
 //                    zqPath="";
-                    cleanDate();
+                    if(pro.isShowing()){
+                        pro.dismiss();
+                    }
                     Log.e("TAG","上传信息识别=="+ex.getMessage().toString());
                     Toast.makeText(getContext(),"上传信息失败",Toast.LENGTH_LONG).show();
                 }

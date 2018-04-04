@@ -61,7 +61,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getBuCartList(i);
     }
 
     @Override

@@ -951,10 +951,12 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
 //                    selectImag.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     selectImag.setScaleType(ImageView.ScaleType.FIT_XY);
 //                    selectImag.setImageBitmap(bm);
-                    bm=ImgRote.rotateBitmapByDegree(bm,ImgRote.getBitmapDegree(photoPath));
-                    new FileUtil(this).saveBitmap(bm);
-                    photoPath=FileUtil.getJpegName();
-                    selectImag.setImageBitmap(new FileUtil(this).readBitmap(photoPath));
+                    if(bm!=null) {
+                        bm = ImgRote.rotateBitmapByDegree(bm, ImgRote.getBitmapDegree(photoPath));
+                        new FileUtil(this).saveBitmap(bm);
+                        photoPath = FileUtil.getJpegName();
+                        selectImag.setImageBitmap(new FileUtil(this).readBitmap(photoPath));
+                    }
                 }
 
                 //                selectImag.setImageBitmap(bitmap);
