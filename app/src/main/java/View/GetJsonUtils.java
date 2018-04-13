@@ -508,13 +508,16 @@ public class GetJsonUtils {
                 buCartListBean.name=jsonObject2.getString("name");//获取用户名
 //                buCartListBean.contact_name=jsonObject2.getString("contact_name");
                 String pic=jsonObject.getString("pic");
-                JSONObject jsonObject3=new JSONObject(pic);
-                buCartListBean.img1=jsonObject3.getString("zhengqian45");
-                Log.e("TAG","buCartListBean.img1=="+buCartListBean.img1);
-                buCartListBean.img2=jsonObject3.getString("zhengqian");
-                Log.e("TAG","buCartListBean.img2=="+buCartListBean.img2);
-                buCartListBean.img3=jsonObject3.getString("zhenghou");
-                Log.e("TAG","buCartListBean.img3=="+buCartListBean.img3);
+                if(!TextUtils.isEmpty(pic)){
+                    JSONObject jsonObject3=new JSONObject(pic);
+                    buCartListBean.img1=jsonObject3.getString("zhengqian45");
+                    Log.e("TAG","buCartListBean.img1=="+buCartListBean.img1);
+                    buCartListBean.img2=jsonObject3.getString("zhengqian");
+                    Log.e("TAG","buCartListBean.img2=="+buCartListBean.img2);
+                    buCartListBean.img3=jsonObject3.getString("zhenghou");
+                    Log.e("TAG","buCartListBean.img3=="+buCartListBean.img3);
+                }
+
 
 //                String merchant_contacter=jsonObject.getString("merchant_contacter");
 //                JSONObject jsonObject4=new JSONObject(merchant_contacter);
@@ -659,19 +662,24 @@ public class GetJsonUtils {
 //                buCartListBean.name=jsonObject2.getString("name");//获取用户名
 //                buCartListBean.contact_name=jsonObject2.getString("contact_name");
                 String pic=jsonObject.getString("pic");
-                JSONObject jsonObject3=new JSONObject(pic);
-                buCartListBean.img1=jsonObject3.getString("zhengqian45");
+                if(!TextUtils.isEmpty(pic)) {
+                    JSONObject jsonObject3 = new JSONObject(pic);
+                    buCartListBean.img1 = jsonObject3.getString("zhengqian45");
 //                Log.e("TAG","buCartListBean.img1=="+buCartListBean.img1);
-                buCartListBean.img2=jsonObject3.getString("zhengqian");
+                    buCartListBean.img2 = jsonObject3.getString("zhengqian");
 //                Log.e("TAG","buCartListBean.img2=="+buCartListBean.img2);
-                buCartListBean.img3=jsonObject3.getString("zhenghou");
+                    buCartListBean.img3 = jsonObject3.getString("zhenghou");
+                    if(pic.contains("youhou45")) {
+                        buCartListBean.img4 = jsonObject3.getString("youhou45");
+                        buCartListBean.img5 = jsonObject3.getString("fadongji");
+                        buCartListBean.img6 = jsonObject3.getString("luntai");
+                        buCartListBean.img7 = jsonObject3.getString("toudeng");
+                        buCartListBean.img8 = jsonObject3.getString("weideng");
+                        buCartListBean.img9 = jsonObject3.getString("yibiaopan");
+                    }
+                }
 //                Log.e("TAG","buCartListBean.img3=="+buCartListBean.img3);
-            buCartListBean.img4=jsonObject3.getString("picone");
-            buCartListBean.img5=jsonObject3.getString("pictwo");
-            buCartListBean.img6=jsonObject3.getString("picthree");
-            buCartListBean.img7=jsonObject3.getString("picfour");
-            buCartListBean.img8=jsonObject3.getString("picfive");
-            buCartListBean.img9=jsonObject3.getString("picsix");
+
 //                String merchant_contacter=jsonObject.getString("merchant_contacter");
 //                JSONObject jsonObject4=new JSONObject(merchant_contacter);
 //                JSONArray jsonArray1=jsonObject.getJSONArray("people_info");

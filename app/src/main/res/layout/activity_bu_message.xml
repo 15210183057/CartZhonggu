@@ -428,7 +428,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="左前45°"/>
+                                android:text="右后45度"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="0dp"
@@ -440,7 +440,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/zqf"
+                                android:src="@drawable/fdjc"
                                 android:scaleType="fitXY"
                                 android:id="@+id/img5_newfragment"/>
                             <TextView
@@ -448,7 +448,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="正前"/>
+                                android:text="发动机"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="0dp"
@@ -460,7 +460,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/zhf"
+                                android:src="@drawable/lt"
                                 android:scaleType="fitXY"
                                 android:id="@+id/img6_newfragment"/>
                             <TextView
@@ -468,7 +468,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:text="正后"/>
+                                android:text="轮胎"/>
                         </LinearLayout>
                     </LinearLayout>
                     <LinearLayout
@@ -491,7 +491,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/zq45d"
+                                android:src="@drawable/td"
                                 android:scaleType="fitXY"
                                 android:id="@+id/img7_newfragment"/>
                             <TextView
@@ -499,7 +499,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="左前45°"/>
+                                android:text="头灯"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="0dp"
@@ -511,7 +511,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/zqf"
+                                android:src="@drawable/wd"
                                 android:scaleType="fitXY"
                                 android:id="@+id/img8_newfragment"/>
                             <TextView
@@ -519,7 +519,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="正前"/>
+                                android:text="尾灯"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="0dp"
@@ -531,7 +531,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/zhf"
+                                android:src="@drawable/zktzz"
                                 android:scaleType="fitXY"
                                 android:id="@+id/img9_newfragment"/>
                             <TextView
@@ -539,7 +539,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:text="正后"/>
+                                android:text="中控台"/>
                         </LinearLayout>
                     </LinearLayout>
                     <Button

@@ -89,7 +89,15 @@ import utils.NameAndTelDialog;
 import utils.SharedUtils;
 import utils.getPicTku;
 import View.GetJsonUtils;
-
+//        zhengqian45 正前45度
+//        zhengqian 正前
+//        zhenghou 正后
+//        youhou45 右后45度
+//        fadongji 发动机
+//        luntai 轮胎
+//        toudeng 头灯
+//        weideng 尾灯
+//        yibiaopan 中控台
 
 public class BuMessageActivity extends BaseActivity implements View.OnClickListener{
     private ImageView img_paizhao;
@@ -1632,13 +1640,13 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         requestParams.addBodyParameter("zhengqian45",zqfUrlPath);
         requestParams.addBodyParameter("zhengqian",zfUrlPath);
         requestParams.addBodyParameter("zhenghou",zhfUrlPath);
-        requestParams.addBodyParameter("picone",img4UrlPath);
-        requestParams.addBodyParameter("pictwo",img5UrlPath);
+        requestParams.addBodyParameter("youhou45",img4UrlPath);
+        requestParams.addBodyParameter("fadongji",img5UrlPath);
         Log.e("TAG","img66=="+img6UrlPath);
-        requestParams.addBodyParameter("picthree",img6UrlPath);
-        requestParams.addBodyParameter("picfour",img7UrlPath);
-        requestParams.addBodyParameter("picfive",img8UrlPath);
-        requestParams.addBodyParameter("picsix",img9UrlPath);
+        requestParams.addBodyParameter("luntai",img6UrlPath);
+        requestParams.addBodyParameter("toudeng",img7UrlPath);
+        requestParams.addBodyParameter("weideng",img8UrlPath);
+        requestParams.addBodyParameter("yibiaopan",img9UrlPath);
 //
 //        Log.e("TAG","上传车辆信息左前方==="+zhfUrlPath);
 //        Log.e("TAG","上传车辆信息正前==="+zfUrlPath);
@@ -1654,7 +1662,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         //车辆分类
         requestParams.addBodyParameter("isDaTing",fenleiID);
         requestParams.addBodyParameter("transterstatus",guohuID);
-        requestParams.addBodyParameter("makeup","1");
+        requestParams.addBodyParameter("makeup","2");
         requestParams.setMaxRetryCount(2);
         Log.e("TAG","上传地址=="+requestParams.getUri());
         Log.e("TAG","上传参数=="+requestParams.getBodyParams());
@@ -1692,7 +1700,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
                                 public void run() {
                                     super.run();
                                     try {
-                                        Thread.sleep(3000);
+                                        Thread.sleep(1000);
                                         if(successdialog.isShowing()){
                                             successdialog.dismiss();
                                         }
@@ -1748,5 +1756,19 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         img7UrlPath="";
         img8UrlPath="";
         img9UrlPath="";
+    }
+    //设置返回键动作（防止按返回键直接退出程序)
+    @Override
+    public void onBackPressed() {
+       if(window!=null&&window.isShowing()){
+           window.dismiss();
+       }
+       if(window2!=null&&window2.isShowing()){
+           window2.dismiss();
+       }
+       if(window3!=null&&window3.isShowing()){
+           window3.dismiss();
+       }
+       finish();
     }
 }

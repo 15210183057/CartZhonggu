@@ -224,7 +224,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
     }
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getContext(),"点击第+"+i+"条数据",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(),"点击第+"+i+"条数据",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -515,12 +515,12 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         requestParams.addBodyParameter("zhengqian45",zqfUrlPath);
         requestParams.addBodyParameter("zhengqian",zfUrlPath);
         requestParams.addBodyParameter("zhenghou",zhfUrlPath);
-        requestParams.addBodyParameter("picone",img4UrlPath);
-        requestParams.addBodyParameter("pictwo",img5UrlPath);
-        requestParams.addBodyParameter("picthree",img6UrlPath);
-        requestParams.addBodyParameter("picfour",img7UrlPath);
-        requestParams.addBodyParameter("picfive",img8UrlPath);
-        requestParams.addBodyParameter("picsix",img9UrlPath);
+        requestParams.addBodyParameter("youhou45",img4UrlPath);
+        requestParams.addBodyParameter("fadongji",img5UrlPath);
+        requestParams.addBodyParameter("luntai",img6UrlPath);
+        requestParams.addBodyParameter("toudeng",img7UrlPath);
+        requestParams.addBodyParameter("weideng",img8UrlPath);
+        requestParams.addBodyParameter("yibiaopan",img9UrlPath);
 //
 //        Log.e("TAG","上传车辆信息左前方==="+zhfUrlPath);
 //        Log.e("TAG","上传车辆信息正前==="+zfUrlPath);
@@ -536,7 +536,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         //车辆分类
         requestParams.addBodyParameter("isDaTing",selectList.get(k).fenleiid);
         requestParams.addBodyParameter("transterstatus",selectList.get(k).guohuid);
-        requestParams.addBodyParameter("makeup","1");
+        requestParams.addBodyParameter("makeup","2");
         requestParams.setMaxRetryCount(2);
         Log.e("TAG","上传地址=="+requestParams.getUri());
         Log.e("TAG","上传参数=="+requestParams.getBodyParams());

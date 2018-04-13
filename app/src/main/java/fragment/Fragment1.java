@@ -161,7 +161,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getContext(),"点击第+"+i+"条数据",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(),"点击第+"+i+"条数据",Toast.LENGTH_SHORT).show();
 //        Intent intent=new Intent(getContext(), CartListInfoMsgActivity.class);
 //        intent.putExtra("vin"+i,list.get(i).vin);
 //        intent.putExtra("cardType"+i,list.get(i).cardType);
@@ -250,8 +250,9 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
 //        mkerp.zgcw.cn/api/api_car/getMylist?userid=16&page=1&merchantid=72&makeup=0
         requestParams.addBodyParameter("userid",UserBean.id);
         requestParams.addBodyParameter("page",current_page+"");
-        requestParams.addBodyParameter("merchantid","244");
-        requestParams.addBodyParameter("makeup","0");
+//        requestParams.addBodyParameter("merchantid","244");
+        requestParams.addBodyParameter("makeup","1");
+        requestParams.addBodyParameter("groupid",UserBean.groupids);
 //        requestParams.addBodyParameter("vin","666");
 //        requestParams.addBodyParameter("where","blu=0 and groupid in("+ UserBean.groupids+") and status=1");
        Log.e("TAG","requestParams接口拼接地址为=="+requestParams+"");
@@ -303,7 +304,7 @@ public class Fragment1 extends Fragment implements AdapterView.OnItemClickListen
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                Toast.makeText(getActivity(),"扫描结果为："+content,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(),"扫描结果为："+content,Toast.LENGTH_SHORT).show();
                 Log.e("TAG","扫描结果为=="+content);
 //                扫描结果为==http://tjkg.zgcw.cn:9008/carinfo.html?muid=tianjin001&code=5158
 //                Intent intent =new Intent(getActivity(),WebViewActivity.class);

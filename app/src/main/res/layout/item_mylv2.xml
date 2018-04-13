@@ -159,6 +159,7 @@
             android:layout_height="30dp"
             android:background="@drawable/denglu_bg"
             android:text="下架"
+            android:visibility="gone"
             android:gravity="center"
             android:layout_marginLeft="10dp"
             android:textColor="#fff"

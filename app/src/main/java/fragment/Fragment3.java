@@ -258,7 +258,8 @@ public class Fragment3 extends Fragment implements AdapterView.OnItemClickListen
         RequestParams requestParams=new RequestParams(getInterface.getList);
         requestParams.addBodyParameter("userid",UserBean.id);
         requestParams.addBodyParameter("page",current_page+"");
-        requestParams.addBodyParameter("makeup","1");
+        requestParams.addBodyParameter("makeup","2");
+        requestParams.addBodyParameter("groupid",UserBean.groupids);
         if(!TextUtils.isEmpty(quyu_ID)) {
             requestParams.addBodyParameter("merchantid", quyu_ID);
         }
