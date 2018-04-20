@@ -504,7 +504,7 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         requestParams.addBodyParameter("id",selectList.get(k).itemid);
         requestParams.addBodyParameter("vin",selectList.get(k).vin);
         requestParams.addBodyParameter("merchant_code",selectList.get(k).chengshangid);
-        requestParams.addBodyParameter("groupid", UserBean.groupids);
+        requestParams.addBodyParameter("groupid", UserBean.groupid);
         requestParams.addBodyParameter("userid",UserBean.id);
         requestParams.addBodyParameter("vendorId",selectList.get(k).brandid);
         requestParams.addBodyParameter("brandId",selectList.get(k).sericseid);
@@ -534,8 +534,8 @@ public class Fragment2 extends Fragment implements View.OnClickListener,AdapterV
         requestParams.addBodyParameter("tel",selectList.get(k).tel);
         requestParams.addBodyParameter("name",selectList.get(k).name);
         //车辆分类
-        requestParams.addBodyParameter("isDaTing",selectList.get(k).fenleiid);
-        requestParams.addBodyParameter("transterstatus",selectList.get(k).guohuid);
+//        requestParams.addBodyParameter("isDaTing",selectList.get(k).fenleiid);
+//        requestParams.addBodyParameter("transterstatus",selectList.get(k).guohuid);
         requestParams.addBodyParameter("makeup","2");
         requestParams.setMaxRetryCount(2);
         Log.e("TAG","上传地址=="+requestParams.getUri());

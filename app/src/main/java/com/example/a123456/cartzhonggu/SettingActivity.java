@@ -37,7 +37,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         relative33=findViewById(R.id.relative33);
         tv_tuichu=findViewById(R.id.tv_tuichu);
         tv_banben=findViewById(R.id.tv_banben);
-        tv_banben.setText("app版本为  v"+ AppUtils.getVersionCode(SettingActivity.this)+".2");
+        tv_banben.setText("app版本为  v"+ AppUtils.getVersionCode(SettingActivity.this)+".3");
          img_back.setOnClickListener(this);
          relative1.setOnClickListener(this);
         relative11.setOnClickListener(this);

@@ -65,7 +65,7 @@ public class GetJsonUtils {
 //                userBean.headimg=object1.getString("headimg");
 //                userBean.loginip=object1.getString("loginip");
 //                userBean.logintime=object1.getString("logintime");
-//                userBean.groupid=object1.getString("groupid");
+                userBean.groupid=object.getString("groupid");
                userBean.groupids=object.getString("groupids");
                Log.e("TAG","group==="+userBean.groupids);
                 Toast.makeText(ctx,"登陆成功",Toast.LENGTH_SHORT).show();

@@ -161,6 +161,12 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         //设置vin不可编辑
         edit_num.setFocusableInTouchMode(false);
         edit_num.setFocusable(false);
+        //姓名电话,里程，价格不可修改
+        edt_licheng.setFocusableInTouchMode(false);
+        edt_price.setFocusable(false);
+        edt_name.setFocusableInTouchMode(false);
+        tv_tel.setFocusable(false);
+
         if(!TextUtils.isEmpty(str)&&str.equals("true")){
             BeanFlag.Flag=true;
         }else{
@@ -219,7 +225,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         Tv_guohu=findViewById(R.id.tv_guohu);//是否过户
 
         img_paizhao.setOnClickListener(this);
-        tv_time.setOnClickListener(this);
+//        tv_time.setOnClickListener(this);
         btn_commit.setOnClickListener(this);
 
         edit_num.addTextChangedListener(new MyEditTextChangeListener(edit_num));
@@ -238,13 +244,13 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         img8_newfragment.setOnClickListener(this);
         img9_newfragment.setOnClickListener(this);
 
-        tv_cartmodel.setOnClickListener(this);
-        tv_quyue.setOnClickListener(this);
-        tv_cartFenlei.setOnClickListener(this);
-        edt_name.setOnClickListener(this);
-        tv_getmodel=findViewById(R.id.tv_getmodel);
-        tv_getmodel.setOnClickListener(this);
-        Tv_guohu.setOnClickListener(this);
+//        tv_cartmodel.setOnClickListener(this);
+//        tv_quyue.setOnClickListener(this);
+//        tv_cartFenlei.setOnClickListener(this);
+//        edt_name.setOnClickListener(this);
+//        tv_getmodel=findViewById(R.id.tv_getmodel);
+//        tv_getmodel.setOnClickListener(this);
+//        Tv_guohu.setOnClickListener(this);
     }
     class MyEditTextChangeListener implements TextWatcher {
         EditText editText;
@@ -1629,7 +1635,7 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         requestParams.addBodyParameter("id",itemId);
         requestParams.addBodyParameter("vin",edit_num.getText().toString());
         requestParams.addBodyParameter("merchant_code",quyuID);
-        requestParams.addBodyParameter("groupid", UserBean.groupids);
+        requestParams.addBodyParameter("groupid", UserBean.groupid);
         requestParams.addBodyParameter("userid",UserBean.id);
         requestParams.addBodyParameter("vendorId",brandid);
         requestParams.addBodyParameter("brandId",seriesid);
@@ -1660,8 +1666,8 @@ public class BuMessageActivity extends BaseActivity implements View.OnClickListe
         requestParams.addBodyParameter("tel",tv_tel.getText().toString());
         requestParams.addBodyParameter("name",edt_name.getText().toString());
         //车辆分类
-        requestParams.addBodyParameter("isDaTing",fenleiID);
-        requestParams.addBodyParameter("transterstatus",guohuID);
+//        requestParams.addBodyParameter("isDaTing",fenleiID);
+//        requestParams.addBodyParameter("transterstatus",guohuID);
         requestParams.addBodyParameter("makeup","2");
         requestParams.setMaxRetryCount(2);
         Log.e("TAG","上传地址=="+requestParams.getUri());
